@@ -1,0 +1,12 @@
+/.vs
+/build
+/vendor/gsl/x86
+/vendor/gsl/x64
+/indexes/4100/fits/*.fits
+/indexes/4200/fits/*.fits
+/indexes/4100/anidx/*.anidx
+/indexes/4200/anidx/*.anidx
+/indexes/4100/fits/md5sums.txt
+/indexes/4100/anidx/md5sums.txt
+/indexes/4200/fits/md5sums.txt
+/indexes/4200/anidx/md5sums.txt

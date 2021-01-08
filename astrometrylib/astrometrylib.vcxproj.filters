@@ -1,0 +1,231 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\astrometry.net">
+      <UniqueIdentifier>{4a0eee41-d3eb-4f52-b28e-a1f52797ee8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\astrometry.net\libkd">
+      <UniqueIdentifier>{66cb8347-809a-48c2-95df-91bd44da73ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\astrometry.net">
+      <UniqueIdentifier>{e251159f-5488-4fa3-8c65-8f39e2f47c2d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\astrometry.net\libkd">
+      <UniqueIdentifier>{6b9c16fe-8225-4608-b34d-a6db85644d1b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\astrometry.net\solver">
+      <UniqueIdentifier>{407b5025-a25d-4415-8d62-51022ffb7aea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\astrometry.net\util">
+      <UniqueIdentifier>{beecb6eb-e055-457b-92c4-8b6db9d6dd4d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\astrometry.net\solver">
+      <UniqueIdentifier>{e006e595-d437-43cd-af3a-4c5b0d9336a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\astrometry.net\util">
+      <UniqueIdentifier>{0e349929-42e6-4326-8e03-9bbde8bc8309}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\astrometry.net\containers">
+      <UniqueIdentifier>{739fb5c4-dab3-46de-93e8-a4fb1628be68}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\astrometry.net\containers">
+      <UniqueIdentifier>{830ca298-8c38-4f2c-a4ca-af81c0962f2d}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="astrometrylib.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libkd\kdtree.c">
+      <Filter>Source Files\astrometry.net\libkd</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libkd\kdint_ddd.c">
+      <Filter>Source Files\astrometry.net\libkd</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libkd\kdint_dds.c">
+      <Filter>Source Files\astrometry.net\libkd</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libkd\kdint_ddu.c">
+      <Filter>Source Files\astrometry.net\libkd</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libkd\kdint_dss.c">
+      <Filter>Source Files\astrometry.net\libkd</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libkd\kdint_duu.c">
+      <Filter>Source Files\astrometry.net\libkd</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libkd\kdint_fff.c">
+      <Filter>Source Files\astrometry.net\libkd</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\index.c">
+      <Filter>Source Files\astrometry.net\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\healpix.c">
+      <Filter>Source Files\astrometry.net\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\permutedsort.c">
+      <Filter>Source Files\astrometry.net\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\mathutil.c">
+      <Filter>Source Files\astrometry.net\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\starutil.c">
+      <Filter>Source Files\astrometry.net\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\qsort_reentrant.c">
+      <Filter>Source Files\astrometry.net\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libkd\kdtree_dim.c">
+      <Filter>Source Files\astrometry.net\libkd</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\fit-wcs.c">
+      <Filter>Source Files\astrometry.net\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\solver\verify.c">
+      <Filter>Source Files\astrometry.net\solver</Filter>
+    </ClCompile>
+    <ClCompile Include="src\solver\solver.c">
+      <Filter>Source Files\astrometry.net\solver</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\sip-utils.c">
+      <Filter>Source Files\astrometry.net\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\gslutils.c">
+      <Filter>Source Files\astrometry.net\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\solver\tweak2.c">
+      <Filter>Source Files\astrometry.net\solver</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\matchobj.c">
+      <Filter>Source Files\astrometry.net\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\compat.c">
+      <Filter>Source Files\astrometry.net\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\codekd.c">
+      <Filter>Source Files\astrometry.net\containers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\starkd.c">
+      <Filter>Source Files\astrometry.net\containers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\starxy.c">
+      <Filter>Source Files\astrometry.net\containers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\sip.c">
+      <Filter>Source Files\astrometry.net\containers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\solver\anidx.c">
+      <Filter>Source Files\astrometry.net\solver</Filter>
+    </ClCompile>
+    <ClCompile Include="src\solver\onefield.c">
+      <Filter>Source Files\astrometry.net\solver</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\libkd\kdint_ttype_f.h">
+      <Filter>Header Files\astrometry.net\libkd</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libkd\kdint_ttype_s.h">
+      <Filter>Header Files\astrometry.net\libkd</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libkd\kdint_ttype_u.h">
+      <Filter>Header Files\astrometry.net\libkd</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libkd\kdint_dtype_d.h">
+      <Filter>Header Files\astrometry.net\libkd</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libkd\kdint_dtype_f.h">
+      <Filter>Header Files\astrometry.net\libkd</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libkd\kdint_dtype_s.h">
+      <Filter>Header Files\astrometry.net\libkd</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libkd\kdint_dtype_u.h">
+      <Filter>Header Files\astrometry.net\libkd</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libkd\kdint_etype_d.h">
+      <Filter>Header Files\astrometry.net\libkd</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libkd\kdint_etype_f.h">
+      <Filter>Header Files\astrometry.net\libkd</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libkd\kdint_etype_s.h">
+      <Filter>Header Files\astrometry.net\libkd</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libkd\kdint_etype_u.h">
+      <Filter>Header Files\astrometry.net\libkd</Filter>
+    </ClInclude>
+    <ClInclude Include="src\libkd\kdint_ttype_d.h">
+      <Filter>Header Files\astrometry.net\libkd</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\codekd.h">
+      <Filter>Header Files\astrometry.net\containers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\starkd.h">
+      <Filter>Header Files\astrometry.net\containers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\starxy.h">
+      <Filter>Header Files\astrometry.net\containers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\sip.h">
+      <Filter>Header Files\astrometry.net\containers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\solver.h">
+      <Filter>Header Files\astrometry.net\solver</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\tweak2.h">
+      <Filter>Header Files\astrometry.net\solver</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\verify.h">
+      <Filter>Header Files\astrometry.net\solver</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\onefield.h">
+      <Filter>Header Files\astrometry.net\solver</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\gslutils.h">
+      <Filter>Header Files\astrometry.net\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\healpix.h">
+      <Filter>Header Files\astrometry.net\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\fit-wcs.h">
+      <Filter>Header Files\astrometry.net\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\mathutil.h">
+      <Filter>Header Files\astrometry.net\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\starutil.h">
+      <Filter>Header Files\astrometry.net\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\kdtree.h">
+      <Filter>Header Files\astrometry.net\libkd</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\compat.h">
+      <Filter>Header Files\astrometry.net\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\sip-utils.h">
+      <Filter>Header Files\astrometry.net\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\permutedsort.h">
+      <Filter>Header Files\astrometry.net\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\matchobj.h">
+      <Filter>Header Files\astrometry.net\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\index.h">
+      <Filter>Header Files\astrometry.net\util</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

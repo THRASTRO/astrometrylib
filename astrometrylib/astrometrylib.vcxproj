@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup>
+    <OutDir>$(SolutionDir)\build\$(Configuration)\$(PlatformShortName)\</OutDir>
+    <IntDir>$(SolutionDir)\build\$(Configuration)\$(PlatformShortName)\astrometrylib\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{680a7b2e-1ed9-462e-bf37-2f49cb872e7e}</ProjectGuid>
+    <RootNamespace>astrometrylib</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>src/include;../vendor/gsl</AdditionalIncludeDirectories>
+      <ModuleOutputFile>build/$(IntDir)</ModuleOutputFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies);gsl.lib;cblas.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../vendor/gsl/x86/Debug</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>src/include;../vendor/gsl</AdditionalIncludeDirectories>
+      <ModuleOutputFile>build/$(IntDir)</ModuleOutputFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies);gsl.lib;cblas.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../vendor/gsl/x86/Release</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>src/include;../vendor/gsl</AdditionalIncludeDirectories>
+      <ModuleOutputFile>build/$(IntDir)</ModuleOutputFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies);gsl.lib;cblas.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../vendor/gsl/x64/Debug</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>src/include;../vendor/gsl</AdditionalIncludeDirectories>
+      <ModuleOutputFile>build/$(IntDir)</ModuleOutputFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies);gsl.lib;cblas.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../vendor/gsl/x64/Release</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="astrometrylib.cpp" />
+    <ClCompile Include="src\libkd\kdint_ddd.c" />
+    <ClCompile Include="src\libkd\kdint_dds.c" />
+    <ClCompile Include="src\libkd\kdint_ddu.c" />
+    <ClCompile Include="src\libkd\kdint_dss.c" />
+    <ClCompile Include="src\libkd\kdint_duu.c" />
+    <ClCompile Include="src\libkd\kdint_fff.c" />
+    <ClCompile Include="src\libkd\kdtree.c" />
+    <ClCompile Include="src\libkd\kdtree_dim.c" />
+    <ClCompile Include="src\solver\anidx.c" />
+    <ClCompile Include="src\solver\onefield.c" />
+    <ClCompile Include="src\solver\solver.c" />
+    <ClCompile Include="src\solver\tweak2.c" />
+    <ClCompile Include="src\solver\verify.c" />
+    <ClCompile Include="src\util\codekd.c" />
+    <ClCompile Include="src\util\compat.c" />
+    <ClCompile Include="src\util\fit-wcs.c" />
+    <ClCompile Include="src\util\gslutils.c" />
+    <ClCompile Include="src\util\healpix.c" />
+    <ClCompile Include="src\util\index.c" />
+    <ClCompile Include="src\util\matchobj.c" />
+    <ClCompile Include="src\util\mathutil.c" />
+    <ClCompile Include="src\util\permutedsort.c" />
+    <ClCompile Include="src\util\qsort_reentrant.c" />
+    <ClCompile Include="src\util\sip-utils.c" />
+    <ClCompile Include="src\util\sip.c" />
+    <ClCompile Include="src\util\starkd.c" />
+    <ClCompile Include="src\util\starutil.c" />
+    <ClCompile Include="src\util\starxy.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\include\codekd.h" />
+    <ClInclude Include="src\include\compat.h" />
+    <ClInclude Include="src\include\fit-wcs.h" />
+    <ClInclude Include="src\include\gslutils.h" />
+    <ClInclude Include="src\include\healpix.h" />
+    <ClInclude Include="src\include\index.h" />
+    <ClInclude Include="src\include\kdtree.h" />
+    <ClInclude Include="src\include\matchobj.h" />
+    <ClInclude Include="src\include\mathutil.h" />
+    <ClInclude Include="src\include\onefield.h" />
+    <ClInclude Include="src\include\permutedsort.h" />
+    <ClInclude Include="src\include\sip-utils.h" />
+    <ClInclude Include="src\include\sip.h" />
+    <ClInclude Include="src\include\solver.h" />
+    <ClInclude Include="src\include\starkd.h" />
+    <ClInclude Include="src\include\starutil.h" />
+    <ClInclude Include="src\include\starxy.h" />
+    <ClInclude Include="src\include\tweak2.h" />
+    <ClInclude Include="src\include\verify.h" />
+    <ClInclude Include="src\libkd\kdint_dtype_d.h" />
+    <ClInclude Include="src\libkd\kdint_dtype_f.h" />
+    <ClInclude Include="src\libkd\kdint_dtype_s.h" />
+    <ClInclude Include="src\libkd\kdint_dtype_u.h" />
+    <ClInclude Include="src\libkd\kdint_etype_d.h" />
+    <ClInclude Include="src\libkd\kdint_etype_f.h" />
+    <ClInclude Include="src\libkd\kdint_etype_s.h" />
+    <ClInclude Include="src\libkd\kdint_etype_u.h" />
+    <ClInclude Include="src\libkd\kdint_ttype_d.h" />
+    <ClInclude Include="src\libkd\kdint_ttype_f.h" />
+    <ClInclude Include="src\libkd\kdint_ttype_s.h" />
+    <ClInclude Include="src\libkd\kdint_ttype_u.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
