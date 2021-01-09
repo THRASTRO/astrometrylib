@@ -334,6 +334,20 @@ const char* indexes[286] = {
 
 };
 
+// Function to reverse elements of an array
+void reverse(const char* arr[], int n)
+{
+    const char* aux[286];
+
+    for (int i = 0; i < n; i++) {
+        aux[n - 1 - i] = arr[i];
+    }
+
+    for (int i = 0; i < n; i++) {
+        arr[i] = aux[i];
+    }
+}
+
 // Sample custom data structure for threads to use.
 // This is passed by void pointer so it can be any data type
 // that can be passed using a single void pointer (LPVOID).
@@ -344,6 +358,8 @@ typedef struct MyData {
 } MYDATA, * PMYDATA;
 
 int main() {
+
+    reverse(indexes, 286);
 
     PMYDATA pDataArray[MAX_THREADS];
     DWORD   dwThreadIdArray[MAX_THREADS];
@@ -377,6 +393,7 @@ int main() {
             // If the array allocation fails, the system is out of memory
             // so there is no point in trying to print an error message.
             // Just terminate execution.
+            printf("EXIT MOTHER\n");
             ExitProcess(2);
         }
 
@@ -405,7 +422,11 @@ int main() {
         }
     }
 
+    printf("WAIT FOR SOLVER THREADS\n");
+
     WaitForMultipleObjects(MAX_THREADS, hThreadArray, TRUE, INFINITE);
+
+    printf("FINSIHED WAITING\n");
 
     // Close all thread handles and free memory allocations.
     for (int i = 0; i < MAX_THREADS; i++)
@@ -447,11 +468,13 @@ DWORD WINAPI SolverThread(LPVOID lpParam)
             *(pDataArray->ntry) += 1;
             if (!ReleaseMutex(pDataArray->ghMutex))
             {
+                printf("ERROR ReleaseMutex\n");
                 // Handle error.
             }
             break;
         case WAIT_ABANDONED:
             return 1;
+                printf("WAIT_ABANDONED\n");
             break;
         }
 
@@ -493,10 +516,19 @@ DWORD WINAPI SolverThread(LPVOID lpParam)
 
         onefield_solve(sp);
 
+        anindex_free(sp->index);
+        free(sp->index);
+        sp->index = 0;
+
         // Abort if a cancel was requested
-        if (sp->cancel && *sp->cancel) break;
+        if (sp->cancel && *sp->cancel) {
+            printf("CANCEL THREAD\n");
+            break;
+        }
 
     }
+
+    printf("FINISHED THREAD\n");
 
     return 0;
 }

@@ -142,15 +142,24 @@ void anidx_load(const char* fname, index_t* index)
     for (int i = 0; i < 11; i += 1) {
         struct anidx_table_header tblhead;
         rv = fread(&tblhead, 12, 1, fh);
-        if (rv != 1) exit(1);
+        if (rv != 1) {
+            printf("fread %d\n", rv);
+            exit(1);
+        }
         uint32_t size = tblhead.naxis1 * tblhead.naxis2;
         if (size == 0) continue;
         void* buffer = malloc(size);
-        if (buffer == 0) continue;
+        if (buffer == 0) {
+            printf("malloc error\n");
+            continue;
+        }
         rv = fread(buffer, size, 1, fh);
         if (rv != 1) {
             if (feof(fh)) {
                 printf("EOF %d\n", size);
+            }
+            else {
+                printf("fread %d\n", rv);
             }
             exit(1);
         }
@@ -243,4 +252,29 @@ void anidx_load(const char* fname, index_t* index)
     kdtree_update_funcs(index->codekd->tree);
     kdtree_update_funcs(index->starkd->tree);
 
+}
+
+void anindex_free(index_t* index) {
+
+    free(index->codekd->tree->lr);
+    free(index->codekd->tree->split.any);
+    free(index->codekd->tree->minval);
+    free(index->codekd->tree->data.any);
+    free(index->starkd->tree->lr);
+    free(index->starkd->tree->split.any);
+    free(index->starkd->tree->minval);
+    free(index->starkd->tree->data.any);
+    free(index->quads);
+    free(index->starkd->sweep);
+
+    index->codekd->tree->lr = 0;
+    index->codekd->tree->split.any = 0;
+    index->codekd->tree->minval = 0;
+    index->codekd->tree->data.any = 0;
+    index->starkd->tree->lr = 0;
+    index->starkd->tree->split.any = 0;
+    index->starkd->tree->minval = 0;
+    index->starkd->tree->data.any = 0;
+    index->quads = 0;
+    index->starkd->sweep = 0;
 }

@@ -23,4 +23,6 @@
 
 void anidx_load(const char* fname, index_t* index);
 
+void anindex_free(index_t* index);
+
 #endif
