@@ -10,6 +10,10 @@
 
 double wcs_pixel_center_for_size(double size);
 
+// sets RA,Dec in degrees.
+void sip_get_radec_center(const sip_t* wcs,
+    double* p_ra, double* p_dec);
+
 /**
  sip->a_order, sip->b_order, sip->a, and sip->b must be set.
 

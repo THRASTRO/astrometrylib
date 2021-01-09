@@ -32,6 +32,7 @@ void sip_free(sip_t* sip) {
     free(sip);
 }
 
+
 static void sip_distortion(const sip_t* sip, double x, double y,
                            double* X, double* Y) {
     // Get pixel coordinates relative to reference pixel
@@ -52,6 +53,21 @@ void sip_pixelxy2xyzarr(const sip_t* sip, double px, double py, double *xyz) {
     } else
         // Run a normal TAN conversion
         tan_pixelxy2xyzarr(&(sip->wcstan), px, py, xyz);
+}
+
+
+// Pixels to RA,Dec in degrees.
+void sip_pixelxy2radec(const sip_t* sip, double px, double py,
+    double* ra, double* dec) {
+    if (has_distortions(sip)) {
+        double U, V;
+        sip_distortion(sip, px, py, &U, &V);
+        // Run a normal TAN conversion on the distorted pixel coords.
+        tan_pixelxy2radec(&(sip->wcstan), U, V, ra, dec);
+    }
+    else
+        // Run a normal TAN conversion
+        tan_pixelxy2radec(&(sip->wcstan), px, py, ra, dec);
 }
 
 // Pixels to RA,Dec in degrees.

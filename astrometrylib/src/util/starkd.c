@@ -17,16 +17,6 @@ static startree_t* startree_alloc() {
     return s;
 }
 
-void startree_search_for_radec(const startree_t* s, double ra, double dec, double radius,
-                               double** xyzresults, double** radecresults,
-                               int** starinds, int* nresults) {
-    double xyz[3];
-    double r2;
-    radecdeg2xyzarr(ra, dec, xyz);
-    r2 = deg2distsq(radius);
-    startree_search_for(s, xyz, r2, xyzresults, radecresults, starinds, nresults);
-}
-
 void startree_search_for(const startree_t* s, const double* xyzcenter, double radius2,
                          double** xyzresults, double** radecresults,
                          int** starinds, int* nresults) {

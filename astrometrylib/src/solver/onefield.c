@@ -23,7 +23,7 @@ void onefield_solve(solver_t* sp)
 
     if (!sp->fieldxy_orig) {
         logerr("Failed to read xylist field.\n");
-        goto cleanup;
+        return;
     }
 
     // Re-use solver object
@@ -100,8 +100,5 @@ void onefield_solve(solver_t* sp)
     sp->fieldxy_orig->x = 0;
     sp->fieldxy_orig->y = 0;
     solver_free_field(sp);
-
-    cleanup:
-        solver_cleanup_field(sp);
 
 }

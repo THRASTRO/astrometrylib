@@ -1,3 +1,5 @@
+#pragma warning (disable : 4996)
+
 #include <cassert>
 #include <iostream>
 #include <limits>
@@ -16,6 +18,8 @@ extern "C" {
 #include "anidx.h"
 #include "solver.h"
 #include "onefield.h"
+#include "sip-utils.h"
+#include "mathutil.h"
 }
 
 static void add_index(solver_t* sp, const char* fname) {
@@ -359,7 +363,7 @@ typedef struct MyData {
 
 int main() {
 
-    reverse(indexes, 286);
+    // reverse(indexes, 286);
 
     PMYDATA pDataArray[MAX_THREADS];
     DWORD   dwThreadIdArray[MAX_THREADS];
@@ -443,6 +447,203 @@ int main() {
 
 }
 
+// RA in degrees to H:M:S
+inline void ra2hms(double ra, int* h, int* m, double* s) {
+    double rem;
+    ra = fmod(ra, 360.0);
+    if (ra < 0.0)
+        ra += 360.0;
+    rem = ra / 15.0;
+    *h = floor(rem);
+    // remaining (fractional) hours
+    rem -= *h;
+    // -> minutes
+    rem *= 60.0;
+    *m = floor(rem);
+    // remaining (fractional) minutes
+    rem -= *m;
+    // -> seconds
+    rem *= 60.0;
+    *s = rem;
+}
+
+// Dec in degrees to D:M:S
+void dec2dms(double dec, int* sign, int* d, int* m, double* s) {
+    double rem;
+    double flr;
+    *sign = (dec >= 0.0) ? 1 : -1;
+    dec *= (*sign);
+    flr = floor(dec);
+    *d = flr;
+    // remaining degrees:
+    rem = dec - flr;
+    // -> minutes
+    rem *= 60.0;
+    *m = floor(rem);
+    // remaining (fractional) minutes
+    rem -= *m;
+    // -> seconds
+    rem *= 60.0;
+    *s = rem;
+}
+
+
+void ra2hmsstring(double ra, char* str) {
+    int h, m;
+    double s;
+    int ss;
+    int ds;
+    ra2hms(ra, &h, &m, &s);
+
+    // round to display to 3 decimal places
+    ss = (int)floor(s);
+    ds = (int)round((s - ss) * 1000.0);
+    if (ds >= 1000) {
+        ss++;
+        ds -= 1000;
+    }
+    if (ss >= 60) {
+        ss -= 60;
+        m += 1;
+    }
+    if (m >= 60) {
+        m -= 60;
+        h += 1;
+    }
+    sprintf(str, "%02i:%02i:%02i.%03i", h, m, ss, ds);
+}
+
+
+void dec2dmsstring(double dec, char* str) {
+    int sign, d, m;
+    double s;
+    int ss, ds;
+    dec2dms(dec, &sign, &d, &m, &s);
+    ss = (int)floor(s);
+    ds = (int)round((s - ss) * 1000.0);
+    if (ds >= 1000) {
+        ss++;
+        ds -= 1000;
+    }
+    if (ss >= 60) {
+        ss -= 60;
+        m += 1;
+    }
+    if (m >= 60) {
+        m -= 60;
+        d += 1;
+    }
+    sprintf(str, "%c%02i:%02i:%02i.%03i", (sign == 1 ? '+' : '-'), d, m, ss, ds);
+}
+
+
+void sip_get_radec_center_hms_string(const sip_t* wcs,
+    char* rastr, char* decstr) {
+    double ra, dec;
+    sip_get_radec_center(wcs, &ra, &dec);
+    ra2hmsstring(ra, rastr);
+    dec2dmsstring(dec, decstr);
+}
+
+
+
+static bool has_distortions(const sip_t* sip) {
+    return (sip->a_order >= 0);
+}
+
+static void sip_distortion(const sip_t* sip, double x, double y,
+    double* X, double* Y) {
+    // Get pixel coordinates relative to reference pixel
+    double u = x - sip->wcstan.crpix[0];
+    double v = y - sip->wcstan.crpix[1];
+    sip_calc_distortion(sip, u, v, X, Y);
+    *X += sip->wcstan.crpix[0];
+    *Y += sip->wcstan.crpix[1];
+}
+
+// Pixels to RA,Dec in degrees.
+void sip_pixelxy2radec(const sip_t* sip, double px, double py,
+    double* ra, double* dec) {
+    if (has_distortions(sip)) {
+        double U, V;
+        sip_distortion(sip, px, py, &U, &V);
+        // Run a normal TAN conversion on the distorted pixel coords.
+        tan_pixelxy2radec(&(sip->wcstan), U, V, ra, dec);
+    }
+    else
+        // Run a normal TAN conversion
+        tan_pixelxy2radec(&(sip->wcstan), px, py, ra, dec);
+}
+
+double distsq_between_radecdeg(double ra1, double dec1,
+    double ra2, double dec2) {
+    double xyz1[3];
+    double xyz2[3];
+    radecdeg2xyzarr(ra1, dec1, xyz1);
+    radecdeg2xyzarr(ra2, dec2, xyz2);
+    return distsq(xyz1, xyz2, 3);
+}
+
+double arcsec_between_radecdeg(double ra1, double dec1,
+    double ra2, double dec2) {
+    return distsq2arcsec(distsq_between_radecdeg(ra1, dec1, ra2, dec2));
+}
+
+void sip_get_field_size(const sip_t* wcs,
+    double* pw, double* ph,
+    char** units) {
+    double minx = 0.5;
+    double maxx = (wcs->wcstan.imagew + 0.5);
+    double midx = (minx + maxx) / 2.0;
+    double miny = 0.5;
+    double maxy = (wcs->wcstan.imageh + 0.5);
+    double midy = (miny + maxy) / 2.0;
+    double ra1, dec1, ra2, dec2, ra3, dec3;
+    double w, h;
+
+    // measure width through the middle
+    sip_pixelxy2radec(wcs, minx, midy, &ra1, &dec1);
+    sip_pixelxy2radec(wcs, midx, midy, &ra2, &dec2);
+    sip_pixelxy2radec(wcs, maxx, midy, &ra3, &dec3);
+    w = arcsec_between_radecdeg(ra1, dec1, ra2, dec2) +
+        arcsec_between_radecdeg(ra2, dec2, ra3, dec3);
+    // measure height through the middle
+    sip_pixelxy2radec(wcs, midx, miny, &ra1, &dec1);
+    sip_pixelxy2radec(wcs, midx, midy, &ra2, &dec2);
+    sip_pixelxy2radec(wcs, midx, maxy, &ra3, &dec3);
+    h = arcsec_between_radecdeg(ra1, dec1, ra2, dec2) +
+        arcsec_between_radecdeg(ra2, dec2, ra3, dec3);
+
+    if (MIN(w, h) < 60.0) {
+        *units = (char*)"arcseconds";
+        *pw = w;
+        *ph = h;
+    }
+    else if (MIN(w, h) < 3600.0) {
+        *units = (char*)"arcminutes";
+        *pw = w / 60.0;
+        *ph = h / 60.0;
+    }
+    else {
+        *units = (char*)"degrees";
+        *pw = w / 3600.0;
+        *ph = h / 3600.0;
+    }
+}
+
+
+double tan_get_orientation(const tan_t* tan) {
+    double T, A, orient;
+    double det, parity;
+    det = tan_det_cd(tan);
+    parity = (det >= 0 ? 1.0 : -1.0);
+    T = parity * tan->cd[0][0] + tan->cd[1][1];
+    A = parity * tan->cd[1][0] - tan->cd[0][1];
+    orient = -rad2deg(atan2(A, T));
+    return orient;
+}
+
+
 DWORD WINAPI SolverThread(LPVOID lpParam)
 {
 
@@ -516,6 +717,44 @@ DWORD WINAPI SolverThread(LPVOID lpParam)
 
         onefield_solve(sp);
 
+        if (sp->best_match_solves) {
+
+            uint64_t delta_cpu = get_cpu_usage() - sp->start_tcpu;
+            uint64_t delta_wall = get_wall_time() - sp->start_twall;
+            printf("++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
+            printf("Field solved in %.2fs (used %.2fs cpu time).\n",
+                delta_wall / 1000.0, delta_cpu / 1000.0);
+            printf("INDEX: %s\n", sp->index->indexfn);
+            printf("++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
+            printf("Solve Log Odds:  %f\n", sp->best_logodds);
+
+            double ra, dec, fieldw, fieldh;
+            char rastr[32], decstr[32];
+            char* fieldunits;
+            double orient;
+
+            sip_t& wcs = *sp->best_match.sip;
+            sip_get_radec_center(&wcs, &ra, &dec);
+            sip_get_radec_center_hms_string(&wcs, rastr, decstr);
+            sip_get_field_size(&wcs, &fieldw, &fieldh, &fieldunits);
+            orient = tan_get_orientation(&wcs.wcstan);
+
+            printf("Number of Matches:  %d\n", sp->best_match.nmatch);
+            printf("Solved with index:  %d\n", sp->best_match.indexid);
+            printf("Field center: (RA,Dec) = (%f, %f) deg.\n", ra, dec);
+            printf("Field center: (RA H:M:S, Dec D:M:S) = (%s, %s).\n", rastr, decstr);
+            printf("Field size: %g x %g %s\n", fieldw, fieldh, fieldunits);
+            printf("Field rotation angle: up is %g degrees E of N\n", orient);
+
+            // if (m_UsePosition)
+            //     printf(QString("Field is: (%1, %2) deg from search coords.").arg(raErr).arg(decErr));
+            // printf(QString("Field size: %1 x %2 %3").arg(fieldw).arg(fieldh).arg(fieldunits));
+            // printf(QString("Pixel Scale: %1\"").arg(pixscale));
+            // printf(QString("Field rotation angle: up is %1 degrees E of N").arg(orient));
+            // printf(QString("Field parity: %1\n").arg(parity));
+        }
+
+        solver_cleanup_field(sp);
         anindex_free(sp->index);
         free(sp->index);
         sp->index = 0;

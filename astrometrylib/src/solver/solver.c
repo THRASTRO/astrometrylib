@@ -272,16 +272,6 @@ double solver_field_height(const solver_t* s) {
     return s->field_maxy - s->field_miny;
 }
 
-//void solver_set_radec(solver_t* s, double ra, double dec, double radius_deg) {
-//    s->use_radec = true;
-//    radecdeg2xyzarr(ra, dec, s->centerxyz);
-//    s->r2 = deg2distsq(radius_deg);
-//}
-
-//void solver_clear_radec(solver_t* s) {
-//    s->use_radec = false;
-//}
-
 static void set_center_and_radius(solver_t* solver, MatchObj* mo,
                                   tan_t* tan, sip_t* sip) {
     double cx, cy, lx, ly;
@@ -651,23 +641,17 @@ static void add_stars(const pquad_t* pq, int* field, int fieldoffset,
 // The real deal
 void solver_run(solver_t* solver) {
     int numxy, newpoint;
-//    double usertime, systime;
-//    // first timer callback is called after 1 second
-//    time_t next_timer_callback_time = time(NULL) + 1;
+
     pquad_t* pquads = NULL;
     size_t i, num_indexes;
     double tol2;
     int field[DQMAX];
-//
-//    get_resource_stats(&usertime, &systime, NULL);
-//
+
     if (!solver->vf)
         solver_preprocess_field(solver);
 
     memset(field, 0, sizeof(field));
-//
-//    solver->starttime = usertime + systime;
-//
+
     numxy = starxy_n(solver->fieldxy);
     if (solver->endobj && (numxy > solver->endobj))
         numxy = solver->endobj;
@@ -797,18 +781,6 @@ void solver_run(solver_t* solver) {
                 solver->quit_now = true;
                 goto quitnow;
             }
-
-            //XXX// if (solver->timer_callback) {
-            //XXX//     time_t delay;
-            //XXX//     time_t now = time(NULL);
-            //XXX//     if (now > next_timer_callback_time) {
-            //XXX//         update_timeused(solver);
-            //XXX//         delay = solver->timer_callback(solver->userdata);
-            //XXX//         if (delay == 0) // Canceled
-            //XXX//             break;
-            //XXX//         next_timer_callback_time = now + delay;
-            //XXX//     }
-            //XXX// }
 
             solver->last_examined_object = newpoint;
             // quads with the new star on the diagonal:
@@ -1295,7 +1267,6 @@ static int solver_handle_hit(solver_t* sp, MatchObj* mo, sip_t* verifysip,
     mo->hpnside = sp->index->hpnside;
     mo->wcstan.imagew = sp->field_maxx;
     mo->wcstan.imageh = sp->field_maxy;
-//    mo->dimquads = quadfile_dimquads(sp->index->quads);
 
     match_distance_in_pixels2 = square(sp->verify_pix) +
         square(sp->index->index_jitter / mo->scale);
