@@ -84,6 +84,8 @@ void onefield_solve(solver_t* sp)
         printf("----------------------------------------------------\n");
         printf("Field failed after %.2fs (used %.2fs cpu time).\n",
             delta_wall / 1000.0, delta_cpu / 1000.0);
+        printf("Did %d code searches, and %d star field matches.\n",
+            sp->code_searches, sp->star_searches);
         printf("INDEX: %s\n", sp->index->indexfn);
         printf("----------------------------------------------------\n");
 

@@ -494,10 +494,17 @@ bool resize_results(kdtree_qres_t* res, int newsize, int D,
         print_results(res, D);
     }
 
-    if (do_dists)
-        res->sdists  = realloc(res->sdists , newsize * sizeof(double));
-    if (do_points)
+
+    if (do_dists) {
+        if (res->allocated >= newsize * sizeof(double)) return true;
+        res->sdists = realloc(res->sdists, newsize * sizeof(double));
+        res->allocated = newsize * sizeof(double);
+    }
+    if (do_points) {
+        if (res->allocated >= newsize * D * sizeof(etype)) return true;
         res->results.any = realloc(res->results.any, newsize * D * sizeof(etype));
+        res->allocated = newsize * D * sizeof(etype);
+    }
     res->inds = realloc(res->inds, newsize * sizeof(u32));
     if (newsize && (!res->results.any || (do_dists && !res->sdists) || !res->inds))
         SYSERROR("Failed to resize kdtree results arrays");
@@ -1164,6 +1171,8 @@ kdtree_qres_t* MANGLE(kdtree_rangesearch_options)
 
 
     if (res) {
+        // These resizes account for 50% of cpu time
+        // We should use memory more efficiently
         if (!res->capacity) {
             resize_results(res, KDTREE_MAX_RESULTS, D, do_dists, do_points);
         } else {

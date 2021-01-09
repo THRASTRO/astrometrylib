@@ -253,6 +253,8 @@ void solver_reset_counters(solver_t* s) {
     s->quit_now = false;
     s->have_best_match = false;
     s->best_match_solves = false;
+    s->code_searches = 0;
+    s->star_searches = 0;
     s->numtries = 0;
     s->nummatches = 0;
     s->numscaleok = 0;
@@ -1149,6 +1151,7 @@ static void try_permutations(const int* origstars, int dimquad,
                 (solver->index->codekd->tree, *presult, code, tol2, options);
             //debug("      trying ABCD = [%i %i %i %i]: %i results.\n",
             //fstars[A], fstars[B], fstars[C], fstars[D], result->nres);
+            solver->code_searches += 1;
 
             if ((*presult)->nres) {
                 double pixvals[DQMAX*2];
@@ -1306,6 +1309,7 @@ static int solver_handle_hit(solver_t* sp, MatchObj* mo, sip_t* verifysip,
                sp->logratio_stoplooking,
                sp->distance_from_quad_bonus, fake_match);
     mo->nverified = sp->num_verified++;
+    sp->star_searches += 1;
 
     if (mo->logodds >= sp->best_logodds) {
         sp->best_logodds = mo->logodds;
@@ -1332,6 +1336,7 @@ static int solver_handle_hit(solver_t* sp, MatchObj* mo, sip_t* verifysip,
                        sp->logratio_stoplooking,
                        sp->distance_from_quad_bonus,
                        fake_match);
+            sp->star_searches += 1;
             logverb("Checking tuned result: logodds = %g (%g)\n",
                     mo->logodds, exp(mo->logodds));
         }

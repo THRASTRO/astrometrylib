@@ -183,6 +183,9 @@ typedef struct {
     double minminAB2;
     double maxmaxAB2;
 
+    int code_searches;
+    int star_searches;
+
     // The relative noise of the current index, squared:
     // square( index->index_jitter / index->index_scale_lower )
     double rel_index_noise2;

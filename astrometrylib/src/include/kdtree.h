@@ -247,6 +247,7 @@ struct kdtree {
 
 struct kdtree_qres {
     unsigned int nres;
+    unsigned int allocated; /* Allocated size. */
     unsigned int capacity; /* Allocated size. */
     union {
         double* d;
