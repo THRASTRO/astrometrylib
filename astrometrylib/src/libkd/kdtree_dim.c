@@ -46,8 +46,7 @@ KD_DECLARE(kdtree_rangesearch_options, kdtree_qres_t*, (const kdtree_t* kd, kdtr
 
 kdtree_qres_t* KDFUNC(kdtree_rangesearch_options_reuse)
      (const kdtree_t *kd, kdtree_qres_t* res, const void *pt, double maxd2, int options) {
-    assert(kd->fun.rangesearch);
-    return kd->fun.rangesearch(kd, res, pt, maxd2, options);
+    KD_DISPATCH(kdtree_rangesearch_options, kd->treetype, res=, (kd, res, pt, maxd2, options));
 }
 
 

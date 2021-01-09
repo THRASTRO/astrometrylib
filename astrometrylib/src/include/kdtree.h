@@ -128,17 +128,18 @@ typedef struct kdtree kdtree_t;
 struct kdtree_qres;
 typedef struct kdtree_qres kdtree_qres_t;
 
-struct kdtree_funcs {
-    void* (*get_data)(const kdtree_t* kd, int i);
-    void  (*copy_data_double)(const kdtree_t* kd, int start, int N, double* dest);
-    double (*get_splitval)(const kdtree_t* kd, int nodeid);
+// struct kdtree_funcs {
+    // void* (*get_data)(const kdtree_t* kd, int i);
+//    void  (*copy_data_double)(const kdtree_t* kd, int start, int N, double* dest);
+    //double (*get_splitval)(const kdtree_t* kd, int nodeid);
     //int (*get_bboxes)(const kdtree_t* kd, int node, void* bblo, void* bbhi);
 
-    int (*check)(const kdtree_t* kd);
+    //int (*check)(const kdtree_t* kd);
     //void (*fix_bounding_boxes)(kdtree_t* kd);
 
-    void  (*nearest_neighbour_internal)(const kdtree_t* kd, const void* query, double* bestd2, int* pbest);
-    kdtree_qres_t* (*rangesearch)(const kdtree_t* kd, kdtree_qres_t* res, const void* pt, double maxd2, int options);
+    // void  (*nearest_neighbour_internal)(const kdtree_t* kd, const void* query, double* bestd2, int* pbest);
+
+    // kdtree_qres_t* (*rangesearch)(const kdtree_t* kd, kdtree_qres_t* res, const void* pt, double maxd2, int options);
 
     //void (*nodes_contained)(const kdtree_t* kd,
     //                        const void* querylow, const void* queryhi,
@@ -159,8 +160,8 @@ struct kdtree_funcs {
     //void (*nn_point)(const kdtree_t* kd, int nodeid, int pointindex);
     // a new best point has been found.
     // void (*nn_new_best)(const kdtree_t* kd, int nodeid, int pointindex, double d2);
-};
-typedef struct kdtree_funcs kdtree_funcs;
+//};
+//typedef struct kdtree_funcs kdtree_funcs;
 
 
 struct kdtree {
@@ -242,7 +243,7 @@ struct kdtree {
 
     void* io;
 
-    struct kdtree_funcs fun;
+    // struct kdtree_funcs fun;
 };
 
 struct kdtree_qres {
@@ -282,7 +283,7 @@ kdtree_t* kdtree_new(int N, int D, int Nleaf);
 /*
  Reinitialize the table of function pointers "kd->fun".
  */
-void kdtree_update_funcs(kdtree_t* kd);
+// void kdtree_update_funcs(kdtree_t* kd);
 
 void kdtree_set_limits(kdtree_t* kd, double* low, double* high);
 

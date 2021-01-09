@@ -25,11 +25,11 @@ kdtree_t* kdtree_build(kdtree_t* kd, void *data, int N, int D, int Nleaf,
 }
 
 
-KD_DECLARE(kdtree_update_funcs, void, (kdtree_t*));
+// KD_DECLARE(kdtree_update_funcs, void, (kdtree_t*));
 
-void kdtree_update_funcs(kdtree_t* kd) {
-    KD_DISPATCH(kdtree_update_funcs, kd->treetype,, (kd));
-}
+// void kdtree_update_funcs(kdtree_t* kd) {
+//     KD_DISPATCH(kdtree_update_funcs, kd->treetype,, (kd));
+// }
 
 
 static inline u8 node_level(int nodeid) {
@@ -340,18 +340,19 @@ int kdtree_nearest_neighbour(const kdtree_t* kd, const void* pt, double* p_mindi
     return kdtree_nearest_neighbour_within(kd, pt, HUGE_VAL, p_mindist2);
 }
 
-int kdtree_check(const kdtree_t* kd) {
-    assert(kd->fun.check);
-    return kd->fun.check(kd);
-}
+//int kdtree_check(const kdtree_t* kd) {
+//    assert(kd->fun.check);
+//    return kd->fun.check(kd);
+//}
+
+KD_DECLARE(kdtree_nn, void, (const kdtree_t* kd, const void* vquery, double* p_bestd2, int* p_ibest));
 
 int kdtree_nearest_neighbour_within(const kdtree_t* kd, const void *pt, double maxd2,
                                     double* p_mindist2) {
     double bestd2 = maxd2;
     int ibest = -1;
 
-    assert(kd->fun.nearest_neighbour_internal);
-    kd->fun.nearest_neighbour_internal(kd, pt, &bestd2, &ibest);
+    KD_DISPATCH(kdtree_nn, kd->treetype, , (kd, pt, &bestd2, &ibest));
 
     if (p_mindist2 && (ibest != -1))
         *p_mindist2 = bestd2;

@@ -245,19 +245,19 @@ typedef u32 bigint;
 
 
 
-void MANGLE(kdtree_update_funcs)(kdtree_t* kd);
-
-                                static bool bboxes(const kdtree_t* kd, int node,
-                                                     ttype** p_tlo, ttype** p_thi, int D) {
-                                    if (kd->bb.any) {
-                                        // bb trees
-                                        *p_tlo =  LOW_HR(kd, D, node);
-                                        *p_thi = HIGH_HR(kd, D, node);
-                                        return true;
-                                    } else {
-                                        return false;
-                                    }
-                                }
+//void MANGLE(kdtree_update_funcs)(kdtree_t* kd);
+//
+static bool bboxes(const kdtree_t* kd, int node,
+                     ttype** p_tlo, ttype** p_thi, int D) {
+    if (kd->bb.any) {
+        // bb trees
+        *p_tlo =  LOW_HR(kd, D, node);
+        *p_thi = HIGH_HR(kd, D, node);
+        return true;
+    } else {
+        return false;
+    }
+}
 
 static inline double dist2(const kdtree_t* kd, const etype* q, const dtype* p, int D) {
     int d;
@@ -1760,234 +1760,234 @@ static void kdtree_quickselect_partition(dtype *arr, unsigned int *parr,
 
 
 
-static int kdtree_check_node(const kdtree_t* kd, int nodeid) {
-    int sum, i;
-    int D = kd->ndim;
-    int L, R;
-    int d;
+//static int kdtree_check_node(const kdtree_t* kd, int nodeid) {
+//    int sum, i;
+//    int D = kd->ndim;
+//    int L, R;
+//    int d;
+//
+//    L = kdtree_left (kd, nodeid);
+//    R = kdtree_right(kd, nodeid);
+//
+//    if (kdtree_is_node_empty(kd, nodeid)) {
+//        assert(L == (R+1));
+//        assert(L >= 0);
+//        assert(L <= kd->ndata);
+//        assert(R >= -1);
+//        assert(R < kd->ndata);
+//        if (!((L == (R+1)) && (L >= -1) && (L <= kd->ndata) && (R >= -1) && (R < kd->ndata))) {
+//            ANERROR("kdtree_check: L,R out of range for empty node");
+//            return -1;
+//        }
+//    } else {
+//        assert(L < kd->ndata);
+//        assert(R < kd->ndata);
+//        assert(L >= 0);
+//        assert(R >= 0);
+//        assert(L <= R);
+//        if (!((L < kd->ndata) && (R < kd->ndata) && (L >= 0) && (R >= 0) && (L <= R))) {
+//            ANERROR("kdtree_check: L,R out of range for non-empty node");
+//            return -1;
+//        }
+//    }
+//
+//    // if it's the root node, make sure that each value in the permutation
+//    // array is present exactly once.
+//    if (!nodeid && kd->perm) {
+//        unsigned char* counts = calloc(kd->ndata, 1);
+//        for (i=0; i<kd->ndata; i++)
+//            counts[kd->perm[i]]++;
+//        for (i=0; i<kd->ndata; i++)
+//            assert(counts[i] == 1);
+//        for (i=0; i<kd->ndata; i++)
+//            if (counts[i] != 1) {
+//                ANERROR("kdtree_check: permutation vector failure");
+//                return -1;
+//            }
+//        free(counts);
+//    }
+//
+//    sum = 0;
+//    if (kd->perm) {
+//        for (i=L; i<=R; i++) {
+//            sum += kd->perm[i];
+//            assert(kd->perm[i] >= 0);
+//            assert(kd->perm[i] < kd->ndata);
+//            if (kd->perm[i] >= kd->ndata) {
+//                ANERROR("kdtree_check: permutation vector range failure");
+//                return -1;
+//            }
+//        }
+//    }
+//
+//    if (KD_IS_LEAF(kd, nodeid)) {
+//        if ((kd->minval && !kd->maxval) ||
+//            (!kd->minval && kd->maxval)) {
+//            ANERROR("kdtree_check: minval but no maxval (or vice versa)");
+//            return -1;
+//        }
+//        if (kd->minval && kd->maxval) {
+//            for (i=L; i<=R; i++) {
+//                dtype* dat = KD_DATA(kd, D, i);
+//                for (d=0; d<D; d++) {
+//                    etype e = POINT_DE(kd, d, dat[d]);
+//                    assert(e >= kd->minval[d]);
+//                    assert(e <= kd->maxval[d]);
+//                }
+//            }
+//        }
+//        return 0;
+//    }
+//
+//    if (kd->bb.any) {
+//        ttype* bb;
+//        ttype *plo, *phi;
+//        bool ok = false;
+//        plo = LOW_HR( kd, D, nodeid);
+//        phi = HIGH_HR(kd, D, nodeid);
+//
+//        // bounding-box sanity.
+//        for (d=0; d<D; d++) {
+//            assert(plo[d] <= phi[d]);
+//            if (plo[d] > phi[d]) {
+//                ANERROR("kdtree_check: bounding-box sanity failure");
+//                return -1;
+//            }
+//        }
+//        // check that the points owned by this node are within its bounding box.
+//        for (i=L; i<=R; i++) {
+//            dtype* dat = KD_DATA(kd, D, i);
+//            for (d=0; d<D; d++) {
+//                ttype t = POINT_DT(kd, d, dat[d], KD_ROUND);
+//                assert(plo[d] <= t);
+//                assert(t <= phi[d]);
+//                if (plo[d] > t || t > phi[d]) {
+//                    ANERROR("kdtree_check: bounding-box failure");
+//                    return -1;
+//                }
+//            }
+//        }
+//
+//        if (!KD_IS_LEAF(kd, nodeid)) {
+//            // check that the children's bounding box corners are within
+//            // the parent's bounding box.
+//            bb = LOW_HR(kd, D, KD_CHILD_LEFT(nodeid));
+//            for (d=0; d<D; d++) {
+//                assert(plo[d] <= bb[d]);
+//                assert(bb[d] <= phi[d]);
+//                if (plo[d] > bb[d] || bb[d] > phi[d]) {
+//                    ANERROR("kdtree_check: bounding-box nesting failure");
+//                    return -1;
+//                }
+//            }
+//            bb = HIGH_HR(kd, D, KD_CHILD_LEFT(nodeid));
+//            for (d=0; d<D; d++) {
+//                assert(plo[d] <= bb[d]);
+//                assert(bb[d] <= phi[d]);
+//                if (plo[d] > bb[d] || bb[d] > phi[d]) {
+//                    ANERROR("kdtree_check: bounding-box nesting failure");
+//                    return -1;
+//                }
+//            }
+//            bb = LOW_HR(kd, D, KD_CHILD_RIGHT(nodeid));
+//            for (d=0; d<D; d++) {
+//                assert(plo[d] <= bb[d]);
+//                assert(bb[d] <= phi[d]);
+//                if (plo[d] > bb[d] || bb[d] > phi[d]) {
+//                    ANERROR("kdtree_check: bounding-box nesting failure");
+//                    return -1;
+//                }
+//            }
+//            bb = HIGH_HR(kd, D, KD_CHILD_RIGHT(nodeid));
+//            for (d=0; d<D; d++) {
+//                assert(plo[d] <= bb[d]);
+//                assert(bb[d] <= phi[d]);
+//                if (plo[d] > bb[d] || bb[d] > phi[d]) {
+//                    ANERROR("kdtree_check: bounding-box nesting failure");
+//                    return -1;
+//                }
+//            }
+//            // check that the children don't overlap with positive volume.
+//            for (d=0; d<D; d++) {
+//                ttype* bb1 = HIGH_HR(kd, D, KD_CHILD_LEFT(nodeid));
+//                ttype* bb2 = LOW_HR(kd, D, KD_CHILD_RIGHT(nodeid));
+//                if (bb2[d] >= bb1[d]) {
+//                    ok = true;
+//                    break;
+//                }
+//            }
+//            assert(ok);
+//            if (!ok) {
+//                ANERROR("kdtree_check: peer overlap failure");
+//                return -1;
+//            }
+//        }
+//    }
+//    if (kd->split.any) {
+//
+//        if (!KD_IS_LEAF(kd, nodeid)) {
+//            // check split/dim.
+//            ttype split;
+//            int dim = 0;
+//            int cL, cR;
+//            dtype dsplit;
+//
+//            split = *KD_SPLIT(kd, nodeid);
+//            if (kd->splitdim)
+//                dim = kd->splitdim[nodeid];
+//            else {
+//                if (TTYPE_INTEGER) {
+//                    bigint tmpsplit;
+//                    tmpsplit = split;
+//                    dim = tmpsplit & kd->dimmask;
+//                    split = tmpsplit & kd->splitmask;
+//                }
+//            }
+//
+//            dsplit = POINT_TD(kd, dim, split);
+//
+//            cL = kdtree_left (kd, KD_CHILD_LEFT(nodeid));
+//            cR = kdtree_right(kd, KD_CHILD_LEFT(nodeid));
+//            for (i=cL; i<=cR; i++) {
+//                dtype* dat = KD_DATA(kd, D, i);
+//                assert(dat[dim] <= dsplit);
+//                if (dat[dim] > dsplit) {
+//                    ANERROR("kdtree_check: split-plane failure (1)");
+//                    printf("Data item %i, dim %i: %g vs %g\n", i, dim, (double)dat[dim], (double)dsplit);
+//                    return -1;
+//                }
+//            }
+//
+//            cL = kdtree_left (kd, KD_CHILD_RIGHT(nodeid));
+//            cR = kdtree_right(kd, KD_CHILD_RIGHT(nodeid));
+//            for (i=cL; i<=cR; i++) {
+//                dtype* dat = KD_DATA(kd, D, i);
+//                assert(dat[dim] >= dsplit);
+//                if (dat[dim] < dsplit) {
+//                    ANERROR("kdtree_check: split-plane failure (2)");
+//                    return -1;
+//                }
+//            }
+//        }
+//    }
+//
+//    return 0;
+//}
 
-    L = kdtree_left (kd, nodeid);
-    R = kdtree_right(kd, nodeid);
-
-    if (kdtree_is_node_empty(kd, nodeid)) {
-        assert(L == (R+1));
-        assert(L >= 0);
-        assert(L <= kd->ndata);
-        assert(R >= -1);
-        assert(R < kd->ndata);
-        if (!((L == (R+1)) && (L >= -1) && (L <= kd->ndata) && (R >= -1) && (R < kd->ndata))) {
-            ANERROR("kdtree_check: L,R out of range for empty node");
-            return -1;
-        }
-    } else {
-        assert(L < kd->ndata);
-        assert(R < kd->ndata);
-        assert(L >= 0);
-        assert(R >= 0);
-        assert(L <= R);
-        if (!((L < kd->ndata) && (R < kd->ndata) && (L >= 0) && (R >= 0) && (L <= R))) {
-            ANERROR("kdtree_check: L,R out of range for non-empty node");
-            return -1;
-        }
-    }
-
-    // if it's the root node, make sure that each value in the permutation
-    // array is present exactly once.
-    if (!nodeid && kd->perm) {
-        unsigned char* counts = calloc(kd->ndata, 1);
-        for (i=0; i<kd->ndata; i++)
-            counts[kd->perm[i]]++;
-        for (i=0; i<kd->ndata; i++)
-            assert(counts[i] == 1);
-        for (i=0; i<kd->ndata; i++)
-            if (counts[i] != 1) {
-                ANERROR("kdtree_check: permutation vector failure");
-                return -1;
-            }
-        free(counts);
-    }
-
-    sum = 0;
-    if (kd->perm) {
-        for (i=L; i<=R; i++) {
-            sum += kd->perm[i];
-            assert(kd->perm[i] >= 0);
-            assert(kd->perm[i] < kd->ndata);
-            if (kd->perm[i] >= kd->ndata) {
-                ANERROR("kdtree_check: permutation vector range failure");
-                return -1;
-            }
-        }
-    }
-
-    if (KD_IS_LEAF(kd, nodeid)) {
-        if ((kd->minval && !kd->maxval) ||
-            (!kd->minval && kd->maxval)) {
-            ANERROR("kdtree_check: minval but no maxval (or vice versa)");
-            return -1;
-        }
-        if (kd->minval && kd->maxval) {
-            for (i=L; i<=R; i++) {
-                dtype* dat = KD_DATA(kd, D, i);
-                for (d=0; d<D; d++) {
-                    etype e = POINT_DE(kd, d, dat[d]);
-                    assert(e >= kd->minval[d]);
-                    assert(e <= kd->maxval[d]);
-                }
-            }
-        }
-        return 0;
-    }
-
-    if (kd->bb.any) {
-        ttype* bb;
-        ttype *plo, *phi;
-        bool ok = false;
-        plo = LOW_HR( kd, D, nodeid);
-        phi = HIGH_HR(kd, D, nodeid);
-
-        // bounding-box sanity.
-        for (d=0; d<D; d++) {
-            assert(plo[d] <= phi[d]);
-            if (plo[d] > phi[d]) {
-                ANERROR("kdtree_check: bounding-box sanity failure");
-                return -1;
-            }
-        }
-        // check that the points owned by this node are within its bounding box.
-        for (i=L; i<=R; i++) {
-            dtype* dat = KD_DATA(kd, D, i);
-            for (d=0; d<D; d++) {
-                ttype t = POINT_DT(kd, d, dat[d], KD_ROUND);
-                assert(plo[d] <= t);
-                assert(t <= phi[d]);
-                if (plo[d] > t || t > phi[d]) {
-                    ANERROR("kdtree_check: bounding-box failure");
-                    return -1;
-                }
-            }
-        }
-
-        if (!KD_IS_LEAF(kd, nodeid)) {
-            // check that the children's bounding box corners are within
-            // the parent's bounding box.
-            bb = LOW_HR(kd, D, KD_CHILD_LEFT(nodeid));
-            for (d=0; d<D; d++) {
-                assert(plo[d] <= bb[d]);
-                assert(bb[d] <= phi[d]);
-                if (plo[d] > bb[d] || bb[d] > phi[d]) {
-                    ANERROR("kdtree_check: bounding-box nesting failure");
-                    return -1;
-                }
-            }
-            bb = HIGH_HR(kd, D, KD_CHILD_LEFT(nodeid));
-            for (d=0; d<D; d++) {
-                assert(plo[d] <= bb[d]);
-                assert(bb[d] <= phi[d]);
-                if (plo[d] > bb[d] || bb[d] > phi[d]) {
-                    ANERROR("kdtree_check: bounding-box nesting failure");
-                    return -1;
-                }
-            }
-            bb = LOW_HR(kd, D, KD_CHILD_RIGHT(nodeid));
-            for (d=0; d<D; d++) {
-                assert(plo[d] <= bb[d]);
-                assert(bb[d] <= phi[d]);
-                if (plo[d] > bb[d] || bb[d] > phi[d]) {
-                    ANERROR("kdtree_check: bounding-box nesting failure");
-                    return -1;
-                }
-            }
-            bb = HIGH_HR(kd, D, KD_CHILD_RIGHT(nodeid));
-            for (d=0; d<D; d++) {
-                assert(plo[d] <= bb[d]);
-                assert(bb[d] <= phi[d]);
-                if (plo[d] > bb[d] || bb[d] > phi[d]) {
-                    ANERROR("kdtree_check: bounding-box nesting failure");
-                    return -1;
-                }
-            }
-            // check that the children don't overlap with positive volume.
-            for (d=0; d<D; d++) {
-                ttype* bb1 = HIGH_HR(kd, D, KD_CHILD_LEFT(nodeid));
-                ttype* bb2 = LOW_HR(kd, D, KD_CHILD_RIGHT(nodeid));
-                if (bb2[d] >= bb1[d]) {
-                    ok = true;
-                    break;
-                }
-            }
-            assert(ok);
-            if (!ok) {
-                ANERROR("kdtree_check: peer overlap failure");
-                return -1;
-            }
-        }
-    }
-    if (kd->split.any) {
-
-        if (!KD_IS_LEAF(kd, nodeid)) {
-            // check split/dim.
-            ttype split;
-            int dim = 0;
-            int cL, cR;
-            dtype dsplit;
-
-            split = *KD_SPLIT(kd, nodeid);
-            if (kd->splitdim)
-                dim = kd->splitdim[nodeid];
-            else {
-                if (TTYPE_INTEGER) {
-                    bigint tmpsplit;
-                    tmpsplit = split;
-                    dim = tmpsplit & kd->dimmask;
-                    split = tmpsplit & kd->splitmask;
-                }
-            }
-
-            dsplit = POINT_TD(kd, dim, split);
-
-            cL = kdtree_left (kd, KD_CHILD_LEFT(nodeid));
-            cR = kdtree_right(kd, KD_CHILD_LEFT(nodeid));
-            for (i=cL; i<=cR; i++) {
-                dtype* dat = KD_DATA(kd, D, i);
-                assert(dat[dim] <= dsplit);
-                if (dat[dim] > dsplit) {
-                    ANERROR("kdtree_check: split-plane failure (1)");
-                    printf("Data item %i, dim %i: %g vs %g\n", i, dim, (double)dat[dim], (double)dsplit);
-                    return -1;
-                }
-            }
-
-            cL = kdtree_left (kd, KD_CHILD_RIGHT(nodeid));
-            cR = kdtree_right(kd, KD_CHILD_RIGHT(nodeid));
-            for (i=cL; i<=cR; i++) {
-                dtype* dat = KD_DATA(kd, D, i);
-                assert(dat[dim] >= dsplit);
-                if (dat[dim] < dsplit) {
-                    ANERROR("kdtree_check: split-plane failure (2)");
-                    return -1;
-                }
-            }
-        }
-    }
-
-    return 0;
-}
-
-int MANGLE(kdtree_check)(const kdtree_t* kd) {
-    int i;
-    if (kd->split.any) {
-        assert(kd->splitmask);
-        if (!kd->splitdim) {
-            assert(kd->dimmask);
-        }
-    }
-    for (i=0; i<kd->nnodes; i++) {
-        if (kdtree_check_node(kd, i))
-            return -1;
-    }
-    return 0;
-}
+//int MANGLE(kdtree_check)(const kdtree_t* kd) {
+//    int i;
+//    if (kd->split.any) {
+//        assert(kd->splitmask);
+//        if (!kd->splitdim) {
+//            assert(kd->dimmask);
+//        }
+//    }
+//    for (i=0; i<kd->nnodes; i++) {
+//        if (kdtree_check_node(kd, i))
+//            return -1;
+//    }
+//    return 0;
+//}
 
 static double maxrange(double* lo, double* hi, int D) {
     double range;
@@ -2510,7 +2510,7 @@ kdtree_t* MANGLE(kdtree_build_2)
     }
 
     // set function table pointers.
-    MANGLE(kdtree_update_funcs)(kd);
+    // MANGLE(kdtree_update_funcs)(kd);
 
     return kd;
 }
@@ -2916,15 +2916,15 @@ int MANGLE(kdtree_get_bboxes)(const kdtree_t* kd, int node,
     return true;
 }
 
-void MANGLE(kdtree_update_funcs)(kdtree_t* kd) {
-    kd->fun.get_data = get_data;
-    kd->fun.copy_data_double = copy_data_double;
-    kd->fun.get_splitval = MANGLE(kdtree_get_splitval);
+// void MANGLE(kdtree_update_funcs)(kdtree_t* kd) {
+    // kd->fun.get_data = get_data;
+//    kd->fun.copy_data_double = copy_data_double;
+    //kd->fun.get_splitval = MANGLE(kdtree_get_splitval);
     //kd->fun.get_bboxes = MANGLE(kdtree_get_bboxes);
-    kd->fun.check = MANGLE(kdtree_check);
+    //kd->fun.check = MANGLE(kdtree_check);
     //kd->fun.fix_bounding_boxes = MANGLE(kdtree_fix_bounding_boxes);
-    kd->fun.nearest_neighbour_internal = MANGLE(kdtree_nn);
-    kd->fun.rangesearch = MANGLE(kdtree_rangesearch_options);
+    // kd->fun.nearest_neighbour_internal = MANGLE(kdtree_nn);
+    // kd->fun.rangesearch = MANGLE(kdtree_rangesearch_options);
     //kd->fun.nodes_contained = MANGLE(kdtree_nodes_contained);
-}
+//}
 

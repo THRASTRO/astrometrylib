@@ -248,8 +248,8 @@ void anidx_load(const char* fname, index_t* index)
             compute_splitbits(index->codekd);
     }
 
-    kdtree_update_funcs(index->codekd);
-    kdtree_update_funcs(index->starkd->tree);
+    // kdtree_update_funcs(index->codekd);
+    // kdtree_update_funcs(index->starkd->tree);
 
 }
 
