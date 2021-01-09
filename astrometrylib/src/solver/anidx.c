@@ -118,16 +118,15 @@ void anidx_load(const char* fname, index_t* index)
 
     int rv = 0;
 
-    index->codekd = calloc(1, sizeof(codetree_t));
+    index->codekd = calloc(1, sizeof(kdtree_t));
     index->starkd = calloc(1, sizeof(startree_t));
 
-    index->codekd->tree = calloc(1, sizeof(kdtree_t));
     index->starkd->tree = calloc(1, sizeof(kdtree_t));
 
-    index->codekd->tree->ndim = header.ckdt_ndim;
-    index->codekd->tree->ndata = header.ckdt_ndat;
-    index->codekd->tree->nnodes = header.ckdt_nnod;
-    index->codekd->tree->treetype = header.ckdt_type;
+    index->codekd->ndim = header.ckdt_ndim;
+    index->codekd->ndata = header.ckdt_ndat;
+    index->codekd->nnodes = header.ckdt_nnod;
+    index->codekd->treetype = header.ckdt_type;
 
     index->starkd->tree->ndim = header.skdt_ndim;
     index->starkd->tree->ndata = header.skdt_ndat;
@@ -135,7 +134,7 @@ void anidx_load(const char* fname, index_t* index)
     index->starkd->tree->treetype = header.skdt_type;
 
     index->starkd->tree->has_linear_lr = header.skdt_linl == 'T';
-    index->codekd->tree->has_linear_lr = header.ckdt_linl == 'T';
+    index->codekd->has_linear_lr = header.ckdt_linl == 'T';
 
     // index->quads->numstars = header.skdt_ndat;
 
@@ -169,21 +168,21 @@ void anidx_load(const char* fname, index_t* index)
             printf("Nothing to be read\n");
             break;
         case 1: // kdtree_lr_codes
-            index->codekd->tree->lr = buffer;
+            index->codekd->lr = buffer;
             break;
         case 2: // kdtree_split_codes
-            index->codekd->tree->split.any = buffer;
+            index->codekd->split.any = buffer;
             break;
         case 3: { // kdtree_range_codes
             double* r = buffer;
-            int ndim = index->codekd->tree->ndim;
-            index->codekd->tree->minval = r;
-            index->codekd->tree->maxval = r + ndim;
-            index->codekd->tree->scale = r[ndim * 2];
-            index->codekd->tree->invscale = 1.0 / r[ndim * 2];
+            int ndim = index->codekd->ndim;
+            index->codekd->minval = r;
+            index->codekd->maxval = r + ndim;
+            index->codekd->scale = r[ndim * 2];
+            index->codekd->invscale = 1.0 / r[ndim * 2];
         } break;
         case 4: // kdtree_data_codes
-            index->codekd->tree->data.any = buffer;
+            index->codekd->data.any = buffer;
             break;
         case 5: // kdtree_header_stars
             printf("Nothing to be read\n");
@@ -220,11 +219,11 @@ void anidx_load(const char* fname, index_t* index)
 
     int nnodes, nbottom;
 
-    nnodes = index->codekd->tree->nnodes;
-    index->codekd->tree->nbottom = (nnodes + 1) / 2;
-    nbottom = index->codekd->tree->nbottom;
-    index->codekd->tree->ninterior = nnodes - nbottom;
-    index->codekd->tree->nlevels = kdtree_nnodes_to_nlevels(nnodes);
+    nnodes = index->codekd->nnodes;
+    index->codekd->nbottom = (nnodes + 1) / 2;
+    nbottom = index->codekd->nbottom;
+    index->codekd->ninterior = nnodes - nbottom;
+    index->codekd->nlevels = kdtree_nnodes_to_nlevels(nnodes);
 
     nnodes = index->starkd->tree->nnodes;
     index->starkd->tree->nbottom = (nnodes + 1) / 2;
@@ -242,24 +241,24 @@ void anidx_load(const char* fname, index_t* index)
             compute_splitbits(index->starkd->tree);
     }
 
-    if (index->codekd->tree->split.any) {
-        if (index->codekd->tree->splitdim)
-            index->codekd->tree->splitmask = UINT32_MAX;
+    if (index->codekd->split.any) {
+        if (index->codekd->splitdim)
+            index->codekd->splitmask = UINT32_MAX;
         else
-            compute_splitbits(index->codekd->tree);
+            compute_splitbits(index->codekd);
     }
 
-    kdtree_update_funcs(index->codekd->tree);
+    kdtree_update_funcs(index->codekd);
     kdtree_update_funcs(index->starkd->tree);
 
 }
 
 void anindex_free(index_t* index) {
 
-    free(index->codekd->tree->lr);
-    free(index->codekd->tree->split.any);
-    free(index->codekd->tree->minval);
-    free(index->codekd->tree->data.any);
+    free(index->codekd->lr);
+    free(index->codekd->split.any);
+    free(index->codekd->minval);
+    free(index->codekd->data.any);
     free(index->starkd->tree->lr);
     free(index->starkd->tree->split.any);
     free(index->starkd->tree->minval);
@@ -267,10 +266,10 @@ void anindex_free(index_t* index) {
     free(index->quads);
     free(index->starkd->sweep);
 
-    index->codekd->tree->lr = 0;
-    index->codekd->tree->split.any = 0;
-    index->codekd->tree->minval = 0;
-    index->codekd->tree->data.any = 0;
+    index->codekd->lr = 0;
+    index->codekd->split.any = 0;
+    index->codekd->minval = 0;
+    index->codekd->data.any = 0;
     index->starkd->tree->lr = 0;
     index->starkd->tree->split.any = 0;
     index->starkd->tree->minval = 0;

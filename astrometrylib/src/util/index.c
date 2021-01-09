@@ -43,7 +43,7 @@ void index_unload(index_t* index) {
         index->starkd = NULL;
     }
     if (index->codekd) {
-        codetree_close(index->codekd);
+        free(index->codekd);
         index->codekd = NULL;
     }
     if (index->quads) {

@@ -114,9 +114,6 @@
     <ClCompile Include="src\util\compat.c">
       <Filter>Source Files\astrometry.net\util</Filter>
     </ClCompile>
-    <ClCompile Include="src\util\codekd.c">
-      <Filter>Source Files\astrometry.net\containers</Filter>
-    </ClCompile>
     <ClCompile Include="src\util\starkd.c">
       <Filter>Source Files\astrometry.net\containers</Filter>
     </ClCompile>
@@ -169,9 +166,6 @@
     </ClInclude>
     <ClInclude Include="src\libkd\kdint_ttype_d.h">
       <Filter>Header Files\astrometry.net\libkd</Filter>
-    </ClInclude>
-    <ClInclude Include="src\include\codekd.h">
-      <Filter>Header Files\astrometry.net\containers</Filter>
     </ClInclude>
     <ClInclude Include="src\include\starkd.h">
       <Filter>Header Files\astrometry.net\containers</Filter>

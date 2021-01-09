@@ -173,7 +173,6 @@
     <ClCompile Include="src\solver\solver.c" />
     <ClCompile Include="src\solver\tweak2.c" />
     <ClCompile Include="src\solver\verify.c" />
-    <ClCompile Include="src\util\codekd.c" />
     <ClCompile Include="src\util\compat.c" />
     <ClCompile Include="src\util\fit-wcs.c" />
     <ClCompile Include="src\util\gslutils.c" />
@@ -190,7 +189,6 @@
     <ClCompile Include="src\util\starxy.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\include\codekd.h" />
     <ClInclude Include="src\include\compat.h" />
     <ClInclude Include="src\include\fit-wcs.h" />
     <ClInclude Include="src\include\gslutils.h" />

@@ -1148,7 +1148,7 @@ static void try_permutations(const int* origstars, int dimquad,
 				
             // Search with the code we've built.
             *presult = kdtree_rangesearch_options_reuse
-                (solver->index->codekd->tree, *presult, code, tol2, options);
+                (solver->index->codekd, *presult, code, tol2, options);
             //debug("      trying ABCD = [%i %i %i %i]: %i results.\n",
             //fstars[A], fstars[B], fstars[C], fstars[D], result->nres);
             solver->code_searches += 1;

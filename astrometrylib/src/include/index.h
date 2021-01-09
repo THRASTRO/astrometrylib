@@ -8,7 +8,7 @@
 
 #include "compat.h"
 #include "starkd.h"
-#include "codekd.h"
+#include "kdtree.h"
 
 /*
  * These routines handle loading of index files, which can consist of
@@ -27,7 +27,7 @@
  */
 typedef struct {
     // The actual components of an index.
-    codetree_t* codekd;
+    kdtree_t* codekd;
     startree_t* starkd;
     uint32_t* quads;
 
