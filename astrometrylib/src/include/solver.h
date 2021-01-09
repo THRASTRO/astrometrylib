@@ -6,8 +6,6 @@
 #ifndef SOLVER_H
 #define SOLVER_H
 
-#include <time.h>
-
 #include "compat.h"
 #include "verify.h"
 #include "starxy.h"

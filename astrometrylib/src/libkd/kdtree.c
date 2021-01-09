@@ -430,22 +430,22 @@ int kdtree_node_point_maxdist2_exceeds(const kdtree_t* kd, int node, const void*
     return res;
 }
 
-void kdtree_nodes_contained(const kdtree_t* kd,
-                            const void* querylow, const void* queryhi,
-                            void (*callback_contained)(const kdtree_t* kd, int node, void* extra),
-                            void (*callback_overlap)(const kdtree_t* kd, int node, void* extra),
-                            void* cb_extra) {
-    assert(kd->fun.nodes_contained);
-    kd->fun.nodes_contained(kd, querylow, queryhi, callback_contained, callback_overlap, cb_extra);
-}
-
-int kdtree_get_bboxes(const kdtree_t* kd, int node, void* bblo, void* bbhi) {
-    assert(kd->fun.get_bboxes);
-    return kd->fun.get_bboxes(kd, node, bblo, bbhi);
-}
-
-void kdtree_fix_bounding_boxes(kdtree_t* kd) {
-    assert(kd->fun.fix_bounding_boxes);
-    kd->fun.fix_bounding_boxes(kd);
-}
+//void kdtree_nodes_contained(const kdtree_t* kd,
+//                            const void* querylow, const void* queryhi,
+//                            void (*callback_contained)(const kdtree_t* kd, int node, void* extra),
+//                            void (*callback_overlap)(const kdtree_t* kd, int node, void* extra),
+//                            void* cb_extra) {
+//    assert(kd->fun.nodes_contained);
+//    kd->fun.nodes_contained(kd, querylow, queryhi, callback_contained, callback_overlap, cb_extra);
+//}
+//
+//int kdtree_get_bboxes(const kdtree_t* kd, int node, void* bblo, void* bbhi) {
+//    assert(kd->fun.get_bboxes);
+//    return kd->fun.get_bboxes(kd, node, bblo, bbhi);
+//}
+//
+//void kdtree_fix_bounding_boxes(kdtree_t* kd) {
+//    assert(kd->fun.fix_bounding_boxes);
+//    kd->fun.fix_bounding_boxes(kd);
+//}
 

@@ -623,8 +623,8 @@ static void kdtree_nn_bb(const kdtree_t* kd, const etype* query,
     // queue root.
     nodestack[0] = 0;
     dist2stack[0] = 0.0;
-    if (kd->fun.nn_enqueue)
-        kd->fun.nn_enqueue(kd, 0, 1);
+    //if (kd->fun.nn_enqueue)
+    //    kd->fun.nn_enqueue(kd, 0, 1);
 
     while (stackpos >= 0) {
         int nodeid;
@@ -638,15 +638,15 @@ static void kdtree_nn_bb(const kdtree_t* kd, const etype* query,
         
         if (dist2stack[stackpos] > bestd2) {
             // pruned!
-            if (kd->fun.nn_prune)
-                kd->fun.nn_prune(kd, nodestack[stackpos], dist2stack[stackpos], bestd2, 1);
+            //if (kd->fun.nn_prune)
+            //    kd->fun.nn_prune(kd, nodestack[stackpos], dist2stack[stackpos], bestd2, 1);
             stackpos--;
             continue;
         }
         nodeid = nodestack[stackpos];
         stackpos--;
-        if (kd->fun.nn_explore)
-            kd->fun.nn_explore(kd, nodeid, dist2stack[stackpos+1], bestd2);
+        //if (kd->fun.nn_explore)
+        //    kd->fun.nn_explore(kd, nodeid, dist2stack[stackpos+1], bestd2);
 
         if (KD_IS_LEAF(kd, nodeid)) {
             // Back when leaf nodes didn't have BBoxes:
@@ -657,8 +657,8 @@ static void kdtree_nn_bb(const kdtree_t* kd, const etype* query,
             for (i=L; i<=R; i++) {
                 bool bailedout = false;
                 double dsqd;
-                if (kd->fun.nn_point)
-                    kd->fun.nn_point(kd, nodeid, i);
+                //if (kd->fun.nn_point)
+                //    kd->fun.nn_point(kd, nodeid, i);
                 data = KD_DATA(kd, D, i);
                 dist2_bailout(kd, query, data, D, bestd2, &bailedout, &dsqd);
                 if (bailedout)
@@ -666,8 +666,8 @@ static void kdtree_nn_bb(const kdtree_t* kd, const etype* query,
                 // new best
                 ibest = i;
                 bestd2 = dsqd;
-                if (kd->fun.nn_new_best)
-                    kd->fun.nn_new_best(kd, nodeid, i, bestd2);
+                //if (kd->fun.nn_new_best)
+                //    kd->fun.nn_new_best(kd, nodeid, i, bestd2);
             }
             continue;
         }
@@ -685,8 +685,8 @@ static void kdtree_nn_bb(const kdtree_t* kd, const etype* query,
                 ttype newd2 = 0;
                 bb_point_mindist2_bailout_ttype(tlo, thi, tquery, D, tl2, &bailed, &newd2);
                 if (bailed) {
-                    if (kd->fun.nn_prune)
-                        kd->fun.nn_prune(kd, nodeid, newd2, bestd2, 2);
+                    //if (kd->fun.nn_prune)
+                    //    kd->fun.nn_prune(kd, nodeid, newd2, bestd2, 2);
                     continue;
                 }
                 dist2 = DIST2_TE(kd, newd2);
@@ -694,8 +694,8 @@ static void kdtree_nn_bb(const kdtree_t* kd, const etype* query,
                 bigttype newd2 = 0;
                 bb_point_mindist2_bailout_bigttype(tlo, thi, tquery, D, bigtl2, &bailed, &newd2);
                 if (bailed) {
-                    if (kd->fun.nn_prune)
-                        kd->fun.nn_prune(kd, nodeid, newd2, bestd2, 3);
+                    //if (kd->fun.nn_prune)
+                    //    kd->fun.nn_prune(kd, nodeid, newd2, bestd2, 3);
                     continue;
                 }
                 dist2 = DIST2_TE(kd, newd2);
@@ -721,8 +721,8 @@ static void kdtree_nn_bb(const kdtree_t* kd, const etype* query,
                     }
                 }
                 if (bailed) {
-                    if (kd->fun.nn_prune)
-                        kd->fun.nn_prune(kd, childid, dist2, bestd2, 4);
+                    //if (kd->fun.nn_prune)
+                    //    kd->fun.nn_prune(kd, childid, dist2, bestd2, 4);
                     continue;
                 }
             }
@@ -749,15 +749,15 @@ static void kdtree_nn_bb(const kdtree_t* kd, const etype* query,
             stackpos++;
             nodestack[stackpos] = secondid;
             dist2stack[stackpos] = secondd2;
-            if (kd->fun.nn_enqueue)
-                kd->fun.nn_enqueue(kd, secondid, 2);
+            //if (kd->fun.nn_enqueue)
+            //    kd->fun.nn_enqueue(kd, secondid, 2);
         }
 
         stackpos++;
         nodestack[stackpos] = firstid;
         dist2stack[stackpos] = firstd2;
-        if (kd->fun.nn_enqueue)
-            kd->fun.nn_enqueue(kd, firstid, 2);
+        //if (kd->fun.nn_enqueue)
+        //    kd->fun.nn_enqueue(kd, firstid, 2);
 
     }
     *p_bestd2 = bestd2;
@@ -939,8 +939,8 @@ void MANGLE(kdtree_nn)(const kdtree_t* kd, const void* vquery,
     // queue root.
     nodestack[0] = 0;
     dist2stack[0] = 0.0;
-    if (kd->fun.nn_enqueue)
-        kd->fun.nn_enqueue(kd, 0, 1);
+    //if (kd->fun.nn_enqueue)
+    //    kd->fun.nn_enqueue(kd, 0, 1);
 
     while (stackpos >= 0) {
         int nodeid;
@@ -957,16 +957,16 @@ void MANGLE(kdtree_nn)(const kdtree_t* kd, const void* vquery,
 
         if (dist2stack[stackpos] > bestd2) {
             // pruned!
-            if (kd->fun.nn_prune)
-                kd->fun.nn_prune(kd, nodestack[stackpos], dist2stack[stackpos], bestd2, 1);
+            //if (kd->fun.nn_prune)
+            //    kd->fun.nn_prune(kd, nodestack[stackpos], dist2stack[stackpos], bestd2, 1);
             stackpos--;
             continue;
         }
         nodeid = nodestack[stackpos];
         stackpos--;
 
-        if (kd->fun.nn_explore)
-            kd->fun.nn_explore(kd, nodeid, dist2stack[stackpos+1], bestd2);
+        //if (kd->fun.nn_explore)
+        //    kd->fun.nn_explore(kd, nodeid, dist2stack[stackpos+1], bestd2);
 
         if (KD_IS_LEAF(kd, nodeid)) {
             dtype* data;
@@ -976,8 +976,8 @@ void MANGLE(kdtree_nn)(const kdtree_t* kd, const void* vquery,
                 bool bailedout = false;
                 double dsqd;
 
-                if (kd->fun.nn_point)
-                    kd->fun.nn_point(kd, nodeid, i);
+                //if (kd->fun.nn_point)
+                //    kd->fun.nn_point(kd, nodeid, i);
 
                 data = KD_DATA(kd, D, i);
                 dist2_bailout(kd, query, data, D, bestd2, &bailedout, &dsqd);
@@ -987,8 +987,8 @@ void MANGLE(kdtree_nn)(const kdtree_t* kd, const void* vquery,
                 ibest = i;
                 bestd2 = dsqd;
 
-                if (kd->fun.nn_new_best)
-                    kd->fun.nn_new_best(kd, nodeid, i, bestd2);
+                //if (kd->fun.nn_new_best)
+                //    kd->fun.nn_new_best(kd, nodeid, i, bestd2);
             }
             continue;
         }
@@ -1019,19 +1019,20 @@ void MANGLE(kdtree_nn)(const kdtree_t* kd, const void* vquery,
             stackpos++;
             nodestack[stackpos] = farchild;
             dist2stack[stackpos] = fard2;
-            if (kd->fun.nn_enqueue)
-                kd->fun.nn_enqueue(kd, farchild, 8);
-        } else {
-            if (kd->fun.nn_prune)
-                kd->fun.nn_prune(kd, farchild, fard2, bestd2, 7);
+            //if (kd->fun.nn_enqueue)
+            //    kd->fun.nn_enqueue(kd, farchild, 8);
         }
+        // else {
+        //     if (kd->fun.nn_prune)
+        //         kd->fun.nn_prune(kd, farchild, fard2, bestd2, 7);
+        // }
 
         // stack near child.
         stackpos++;
         nodestack[stackpos] = nearchild;
         dist2stack[stackpos] = 0.0;
-        if (kd->fun.nn_enqueue)
-            kd->fun.nn_enqueue(kd, nearchild, 9);
+        //if (kd->fun.nn_enqueue)
+        //    kd->fun.nn_enqueue(kd, nearchild, 9);
     }
     *p_bestd2 = bestd2;
     *p_ibest = ibest;
@@ -2919,11 +2920,11 @@ void MANGLE(kdtree_update_funcs)(kdtree_t* kd) {
     kd->fun.get_data = get_data;
     kd->fun.copy_data_double = copy_data_double;
     kd->fun.get_splitval = MANGLE(kdtree_get_splitval);
-    kd->fun.get_bboxes = MANGLE(kdtree_get_bboxes);
+    //kd->fun.get_bboxes = MANGLE(kdtree_get_bboxes);
     kd->fun.check = MANGLE(kdtree_check);
-    kd->fun.fix_bounding_boxes = MANGLE(kdtree_fix_bounding_boxes);
+    //kd->fun.fix_bounding_boxes = MANGLE(kdtree_fix_bounding_boxes);
     kd->fun.nearest_neighbour_internal = MANGLE(kdtree_nn);
     kd->fun.rangesearch = MANGLE(kdtree_rangesearch_options);
-    kd->fun.nodes_contained = MANGLE(kdtree_nodes_contained);
+    //kd->fun.nodes_contained = MANGLE(kdtree_nodes_contained);
 }
 

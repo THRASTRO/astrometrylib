@@ -41,6 +41,7 @@ int nstars = sizeof(starsx) / sizeof(double);
 
 int nindexes = 286;
 const char* indexes[286] = {
+
     "..\\indexes\\4200\\anidx\\index-4219.anidx",
     "..\\indexes\\4200\\anidx\\index-4218.anidx",
     "..\\indexes\\4200\\anidx\\index-4217.anidx",

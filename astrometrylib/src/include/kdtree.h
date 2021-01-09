@@ -132,33 +132,33 @@ struct kdtree_funcs {
     void* (*get_data)(const kdtree_t* kd, int i);
     void  (*copy_data_double)(const kdtree_t* kd, int start, int N, double* dest);
     double (*get_splitval)(const kdtree_t* kd, int nodeid);
-    int (*get_bboxes)(const kdtree_t* kd, int node, void* bblo, void* bbhi);
+    //int (*get_bboxes)(const kdtree_t* kd, int node, void* bblo, void* bbhi);
 
     int (*check)(const kdtree_t* kd);
-    void (*fix_bounding_boxes)(kdtree_t* kd);
+    //void (*fix_bounding_boxes)(kdtree_t* kd);
 
     void  (*nearest_neighbour_internal)(const kdtree_t* kd, const void* query, double* bestd2, int* pbest);
     kdtree_qres_t* (*rangesearch)(const kdtree_t* kd, kdtree_qres_t* res, const void* pt, double maxd2, int options);
 
-    void (*nodes_contained)(const kdtree_t* kd,
-                            const void* querylow, const void* queryhi,
-                            void (*callback_contained)(const kdtree_t* kd, int node, void* extra),
-                            void (*callback_overlap)(const kdtree_t* kd, int node, void* extra),
-                            void* cb_extra);
+    //void (*nodes_contained)(const kdtree_t* kd,
+    //                        const void* querylow, const void* queryhi,
+    //                        void (*callback_contained)(const kdtree_t* kd, int node, void* extra),
+    //                        void (*callback_overlap)(const kdtree_t* kd, int node, void* extra),
+    //                        void* cb_extra);
 
     // instrumentation functions - set these to get callbacks about
     // the progress of the algorithm.
 
     // a node was enqueued to be searched during nearest-neighbour.
-    void (*nn_enqueue)(const kdtree_t* kd, int nodeid, int place);
+    // void (*nn_enqueue)(const kdtree_t* kd, int nodeid, int place);
     // a node was pruned during nearest-neighbour.
-    void (*nn_prune)(const kdtree_t* kd, int nodeid, double d2, double bestd2, int place);
+    // void (*nn_prune)(const kdtree_t* kd, int nodeid, double d2, double bestd2, int place);
     // a node is being explored during nearest-neighbour.
-    void (*nn_explore)(const kdtree_t* kd, int nodeid, double d2, double bestd2);
+    //void (*nn_explore)(const kdtree_t* kd, int nodeid, double d2, double bestd2);
     // a point is being examined during nearest-neighbour.
-    void (*nn_point)(const kdtree_t* kd, int nodeid, int pointindex);
+    //void (*nn_point)(const kdtree_t* kd, int nodeid, int pointindex);
     // a new best point has been found.
-    void (*nn_new_best)(const kdtree_t* kd, int nodeid, int pointindex, double d2);
+    // void (*nn_new_best)(const kdtree_t* kd, int nodeid, int pointindex, double d2);
 };
 typedef struct kdtree_funcs kdtree_funcs;
 
@@ -388,7 +388,7 @@ void kdtree_nodes_contained(const kdtree_t* kd,
  *
  * Returns false if the tree does not have bounding boxes.
  */
-int kdtree_get_bboxes(const kdtree_t* kd, int node, void* bblo, void* bbhi);
+// int kdtree_get_bboxes(const kdtree_t* kd, int node, void* bblo, void* bbhi);
 
 double kdtree_node_node_mindist2(const kdtree_t* kd1, int node1,
                                  const kdtree_t* kd2, int node2);
@@ -418,7 +418,7 @@ int kdtree_node_point_maxdist2_exceeds(const kdtree_t* kd, int node,
 /* Sanity-check a tree. 0=okay. */
 int kdtree_check(const kdtree_t* t);
 
-void kdtree_fix_bounding_boxes(kdtree_t* kd);
+// void kdtree_fix_bounding_boxes(kdtree_t* kd);
 
 #if 0
 /* Range seach using callback */
