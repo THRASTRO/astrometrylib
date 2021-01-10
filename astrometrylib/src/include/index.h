@@ -26,6 +26,9 @@
  "codekd", "quads", and "starkd" fields NULL.
  */
 typedef struct {
+
+    uint8_t* dataptr;
+
     // The actual components of an index.
     kdtree_t* codekd;
     startree_t* starkd;

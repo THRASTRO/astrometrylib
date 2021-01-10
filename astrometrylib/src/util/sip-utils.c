@@ -10,13 +10,7 @@
 #include "sip-utils.h"
 #include "gslutils.h"
 #include "mathutil.h"
-
-void sip_get_radec_center(const sip_t* wcs,
-    double* p_ra, double* p_dec) {
-    double px = wcs_pixel_center_for_size(wcs->wcstan.imagew);
-    double py = wcs_pixel_center_for_size(wcs->wcstan.imageh);
-    sip_pixelxy2radec(wcs, px, py, p_ra, p_dec);
-}
+#include "sip.h"
 
 double wcs_pixel_center_for_size(double size) {
     return 0.5 + 0.5 * size;

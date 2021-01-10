@@ -710,6 +710,13 @@ void sip_pixelxy2radec(const sip_t* sip, double px, double py,
         tan_pixelxy2radec(&(sip->wcstan), px, py, ra, dec);
 }
 
+void sip_get_radec_center(const sip_t* wcs,
+    double* p_ra, double* p_dec) {
+    double px = wcs_pixel_center_for_size(wcs->wcstan.imagew);
+    double py = wcs_pixel_center_for_size(wcs->wcstan.imageh);
+    sip_pixelxy2radec(wcs, px, py, p_ra, p_dec);
+}
+
 double distsq_between_radecdeg(double ra1, double dec1,
     double ra2, double dec2) {
     double xyz1[3];

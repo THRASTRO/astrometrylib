@@ -11,15 +11,6 @@
 #include <assert.h>
 
 #include "index.h"
- 
- // #include "solver.h"
-// #include "pquad.h"
-// #include "kdtree.h"
-// #include "codekd.h"
-// #include "starkd.h"
-// #include "permutedsort.h"
-// #include "quad-utils.h"
-// #include "log.h"
 
 void anidx_load(const char* fname, index_t* index);
 

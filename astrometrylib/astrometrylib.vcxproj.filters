@@ -278,5 +278,8 @@
     <ClInclude Include="astrometrylib.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\include\anidx.h">
+      <Filter>Header Files\astrometry.net\solver</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

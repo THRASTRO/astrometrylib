@@ -207,6 +207,7 @@
     <ClInclude Include="..\vendor\stb\stb_image_resize.h" />
     <ClInclude Include="..\vendor\stb\stb_image_write.h" />
     <ClInclude Include="astrometrylib.hpp" />
+    <ClInclude Include="src\include\anidx.h" />
     <ClInclude Include="src\include\compat.h" />
     <ClInclude Include="src\include\fit-wcs.h" />
     <ClInclude Include="src\include\gslutils.h" />

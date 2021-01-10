@@ -85,32 +85,39 @@ void anidx_load(const char* fname, index_t* index)
     fseek(fh, 0L, SEEK_END);
     int sz = ftell(fh);
     fseek(fh, 0L, SEEK_SET);
+    uint8_t* dataptr = calloc(1, sz);
+    index->dataptr = dataptr;
+    fread(dataptr, sz, 1, fh);
+    fseek(fh, 0L, SEEK_SET);
 
-    struct anidx_header header;
-    fread(&header, 96, 1, fh);
+    struct anidx_header* header = (struct anidx_header*) dataptr;
 
-    index->healpix = header.healpix;
-    index->hpnside = header.hpnside;
+    int datapos = 96;
 
-    index->indexid = header.indexid;
-    index->nquads = header.ckdt_ndat;
-    index->nstars = header.skdt_ndat;
+    // fread(header, 96, 1, fh);
+
+    index->healpix = header->healpix;
+    index->hpnside = header->hpnside;
+
+    index->indexid = header->indexid;
+    index->nquads = header->ckdt_ndat;
+    index->nstars = header->skdt_ndat;
 
     index->dimquads = MAX(
-        header.ckdt_ndim,
-        header.skdt_ndim);
+        header->ckdt_ndim,
+        header->skdt_ndim);
 
-    index->cutdedup = header.cutdedup;
-    index->cutnside = header.cutnside;
-    index->cutnsweep = header.cutnswep;
-    index->cutmargin = header.cutmarg;
+    index->cutdedup = header->cutdedup;
+    index->cutnside = header->cutnside;
+    index->cutnsweep = header->cutnswep;
+    index->cutmargin = header->cutmarg;
 
-    index->index_scale_upper = header.scale_u;
-    index->index_scale_lower = header.scale_l;
+    index->index_scale_upper = header->scale_u;
+    index->index_scale_lower = header->scale_l;
 
-    index->circle = header.circle == 'T';
-    index->cx_less_than_dx = header.cxdx == 'T';
-    index->meanx_less_than_half = header.cxdxlt1 == 'T';
+    index->circle = header->circle == 'T';
+    index->cx_less_than_dx = header->cxdx == 'T';
+    index->meanx_less_than_half = header->cxdxlt1 == 'T';
 
     if (index->index_jitter == 0.0) {
         index->index_jitter = DEFAULT_INDEX_JITTER;
@@ -123,47 +130,29 @@ void anidx_load(const char* fname, index_t* index)
 
     index->starkd->tree = calloc(1, sizeof(kdtree_t));
 
-    index->codekd->ndim = header.ckdt_ndim;
-    index->codekd->ndata = header.ckdt_ndat;
-    index->codekd->nnodes = header.ckdt_nnod;
-    index->codekd->treetype = header.ckdt_type;
+    index->codekd->ndim = header->ckdt_ndim;
+    index->codekd->ndata = header->ckdt_ndat;
+    index->codekd->nnodes = header->ckdt_nnod;
+    index->codekd->treetype = header->ckdt_type;
 
-    index->starkd->tree->ndim = header.skdt_ndim;
-    index->starkd->tree->ndata = header.skdt_ndat;
-    index->starkd->tree->nnodes = header.skdt_nnod;
-    index->starkd->tree->treetype = header.skdt_type;
+    index->starkd->tree->ndim = header->skdt_ndim;
+    index->starkd->tree->ndata = header->skdt_ndat;
+    index->starkd->tree->nnodes = header->skdt_nnod;
+    index->starkd->tree->treetype = header->skdt_type;
 
-    index->starkd->tree->has_linear_lr = header.skdt_linl == 'T';
-    index->codekd->has_linear_lr = header.ckdt_linl == 'T';
+    index->starkd->tree->has_linear_lr = header->skdt_linl == 'T';
+    index->codekd->has_linear_lr = header->ckdt_linl == 'T';
 
-    // index->quads->numstars = header.skdt_ndat;
+    // index->quads->numstars = header->skdt_ndat;
 
     for (int i = 0; i < 11; i += 1) {
-        struct anidx_table_header tblhead;
-        rv = fread(&tblhead, 12, 1, fh);
-        if (rv != 1) {
-            printf("fread %d\n", rv);
-            exit(1);
-        }
-        uint32_t size = tblhead.naxis1 * tblhead.naxis2;
+        struct anidx_table_header* tblhead = (struct anidx_table_header*)(dataptr + datapos);
+        datapos += 12;
+        uint32_t size = tblhead->naxis1 * tblhead->naxis2;
         if (size == 0) continue;
-        void* buffer = malloc(size);
-        if (buffer == 0) {
-            printf("malloc error\n");
-            continue;
-        }
-        rv = fread(buffer, size, 1, fh);
-        if (rv != 1) {
-            if (feof(fh)) {
-                printf("EOF %d\n", size);
-            }
-            else {
-                printf("fread %d\n", rv);
-            }
-            exit(1);
-        }
-
-        switch (tblhead.type) {
+        void* buffer = dataptr + datapos;
+        datapos += size;
+        switch (tblhead->type) {
         case 0: // kdtree_header_codes
             printf("Nothing to be read\n");
             break;
@@ -205,7 +194,7 @@ void anidx_load(const char* fname, index_t* index)
             index->starkd->tree->data.any = buffer;
             break;
         case 10: // quads
-            index->nquads = tblhead.naxis2;
+            index->nquads = tblhead->naxis2;
             index->quads = buffer;
             break;
         case 11: // sweep
@@ -255,16 +244,17 @@ void anidx_load(const char* fname, index_t* index)
 
 void anindex_free(index_t* index) {
 
-    free(index->codekd->lr);
-    free(index->codekd->split.any);
-    free(index->codekd->minval);
-    free(index->codekd->data.any);
-    free(index->starkd->tree->lr);
-    free(index->starkd->tree->split.any);
-    free(index->starkd->tree->minval);
-    free(index->starkd->tree->data.any);
-    free(index->quads);
-    free(index->starkd->sweep);
+    // free(index->codekd->lr);
+    // free(index->codekd->split.any);
+    // free(index->codekd->minval);
+    // free(index->codekd->data.any);
+    // free(index->starkd->tree->lr);
+    // free(index->starkd->tree->split.any);
+    // free(index->starkd->tree->minval);
+    // free(index->starkd->tree->data.any);
+    // free(index->quads);
+    // free(index->starkd->sweep);
+    free(index->dataptr);
 
     index->codekd->lr = 0;
     index->codekd->split.any = 0;
@@ -276,4 +266,5 @@ void anindex_free(index_t* index) {
     index->starkd->tree->data.any = 0;
     index->quads = 0;
     index->starkd->sweep = 0;
+    index->dataptr = 0;
 }
