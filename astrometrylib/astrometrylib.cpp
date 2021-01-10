@@ -14,12 +14,17 @@
 
 DWORD WINAPI SolverThread(LPVOID lpParam);
 
+// Request implementation for unit
+#define STB_IMAGE_IMPLEMENTATION
+
 extern "C" {
 #include "anidx.h"
 #include "solver.h"
 #include "onefield.h"
 #include "sip-utils.h"
 #include "mathutil.h"
+#include "stb_image.h"
+#include "sep.h"
 }
 
 static void add_index(solver_t* sp, const char* fname) {
@@ -32,12 +37,12 @@ static void add_index(solver_t* sp, const char* fname) {
 }
 
 
-double starsx[] = { 500.683167, 1242.158081, 985.477905, 1664.199097, 19.704235, 1474.027344, 628.359497, 658.673096, 1526.426514, 1545.087036, 1583.848389, 189.423462, 1761.488647, 1152.949341, 389.818756, 1097.540039, 1085.003296, 999.454163, 798.563477, 1008.911987, 900.140808, 716.133911, 1029.750977, 592.821533, 734.772827, 981.968994, 1027.081787, 489.777069, 1675.119385, 1911.640747, 185.543015, 342.480927, 659.959106, 558.996826, 1532.897949, 502.229980, 440.928497, 298.267731, 1455.319824, 1310.863525, 567.240784, 480.943268, 333.174042, 1449.509277, 492.634460, 1913.880737, 254.856842, 1366.231689, 1601.340698, 350.116669, 1667.941284, 1548.419800, 1267.729858, 1354.994873, 805.972412, 372.067505, 1835.746582, 1463.610962, 1222.551270, 699.566223, 1277.750122, 1675.419312, 1517.063843, 753.418518, 1932.414062, 1609.381958, 469.612244, 644.516235, 1319.641968, 295.847076, 1447.690430, 211.825150, 1241.972656, 845.961487, 442.586182, 1390.663818, 720.758179, 1758.351196, 992.031738, 1061.501343, 1259.796143, 451.444305, 185.978119, 715.997559 };
-double starsy[] = { 11.902996, 31.114763, 49.259823, 80.952766, 93.250870, 97.681374, 100.815140, 133.563690, 145.376846, 144.420090, 145.699203, 154.528824, 174.900070, 191.152252, 193.709579, 374.836670, 982.624207, 463.069244, 471.677460, 557.925659, 816.610291, 786.003601, 757.017944, 646.356445, 604.915283, 583.689270, 732.347107, 209.434769, 226.671463, 282.312500, 322.318298, 325.442505, 346.637329, 368.581604, 373.607452, 417.042664, 426.387207, 458.701050, 472.333160, 479.450958, 576.168945, 549.741943, 623.626465, 643.280212, 641.492065, 663.172424, 679.645142, 683.353821, 716.017822, 726.026428, 730.701904, 735.636353, 783.696350, 822.958130, 834.669800, 874.416748, 874.362671, 942.685974, 973.240784, 991.154114, 1015.974304, 1013.608521, 1075.139404, 1060.234619, 1074.157593, 1086.313843, 1098.776611, 1103.180786, 1118.468872, 1122.958130, 1122.487915, 1142.108032, 1169.877197, 1167.692505, 1176.030640, 1182.999634, 1211.152100, 1219.461182, 1221.418213, 1223.411743, 1230.603516, 1239.920288, 1253.869751, 1279.403809 };
-
 // Input values needed to process
-int width = 1944; int height = 1296;
-int nstars = sizeof(starsx) / sizeof(double);
+// int width = 1944; int height = 1296;
+// int nstars = sizeof(starsx) / sizeof(double);
+
+// double starsx[] = { 500.683167, 1242.158081, 985.477905, 1664.199097, 19.704235, 1474.027344, 628.359497, 658.673096, 1526.426514, 1545.087036, 1583.848389, 189.423462, 1761.488647, 1152.949341, 389.818756, 1097.540039, 1085.003296, 999.454163, 798.563477, 1008.911987, 900.140808, 716.133911, 1029.750977, 592.821533, 734.772827, 981.968994, 1027.081787, 489.777069, 1675.119385, 1911.640747, 185.543015, 342.480927, 659.959106, 558.996826, 1532.897949, 502.229980, 440.928497, 298.267731, 1455.319824, 1310.863525, 567.240784, 480.943268, 333.174042, 1449.509277, 492.634460, 1913.880737, 254.856842, 1366.231689, 1601.340698, 350.116669, 1667.941284, 1548.419800, 1267.729858, 1354.994873, 805.972412, 372.067505, 1835.746582, 1463.610962, 1222.551270, 699.566223, 1277.750122, 1675.419312, 1517.063843, 753.418518, 1932.414062, 1609.381958, 469.612244, 644.516235, 1319.641968, 295.847076, 1447.690430, 211.825150, 1241.972656, 845.961487, 442.586182, 1390.663818, 720.758179, 1758.351196, 992.031738, 1061.501343, 1259.796143, 451.444305, 185.978119, 715.997559 };
+// double starsy[] = { 11.902996, 31.114763, 49.259823, 80.952766, 93.250870, 97.681374, 100.815140, 133.563690, 145.376846, 144.420090, 145.699203, 154.528824, 174.900070, 191.152252, 193.709579, 374.836670, 982.624207, 463.069244, 471.677460, 557.925659, 816.610291, 786.003601, 757.017944, 646.356445, 604.915283, 583.689270, 732.347107, 209.434769, 226.671463, 282.312500, 322.318298, 325.442505, 346.637329, 368.581604, 373.607452, 417.042664, 426.387207, 458.701050, 472.333160, 479.450958, 576.168945, 549.741943, 623.626465, 643.280212, 641.492065, 663.172424, 679.645142, 683.353821, 716.017822, 726.026428, 730.701904, 735.636353, 783.696350, 822.958130, 834.669800, 874.416748, 874.362671, 942.685974, 973.240784, 991.154114, 1015.974304, 1013.608521, 1075.139404, 1060.234619, 1074.157593, 1086.313843, 1098.776611, 1103.180786, 1118.468872, 1122.958130, 1122.487915, 1142.108032, 1169.877197, 1167.692505, 1176.030640, 1182.999634, 1211.152100, 1219.461182, 1221.418213, 1223.411743, 1230.603516, 1239.920288, 1253.869751, 1279.403809 };
 
 int nindexes = 286;
 const char* indexes[286] = {
@@ -360,11 +365,89 @@ typedef struct MyData {
     int* ntry;
     HANDLE ghMutex;
     bool* cancel;
+    int nstars;
+    double* starsx;
+    double* starsy;
+    uint32_t width;
+    uint32_t height;
 } MYDATA, * PMYDATA;
 
 int main() {
 
+    // Reverse will increase CPU time used
+    // Useful for performance tests
     // reverse(indexes, 286);
+
+
+    int width, height, components;
+
+    const char* fnimg = "../test/field-01.jpg";
+
+    FILE* imgfh;
+    fopen_s(&imgfh, fnimg, "rb");
+    if (!imgfh) {
+        printf("Could not open %s\n", fnimg);
+        exit(1);
+    }
+
+    // Load the image and assigns width, height and components
+    // The components will hold how many components per channel
+    // E.g. 3 for rgb images, 4 for rgba images and 1 for monochrome
+    stbi_uc* idata = stbi_load_from_file(imgfh, &width, &height, &components, 0);
+    if (idata == NULL) {
+        printf("Could not load image\n");
+        exit(1);
+    }
+    if (components < 3) {
+        printf("Not enough pixel components (rgb expected)\n");
+        exit(1);
+    }
+
+    fclose(imgfh);
+
+    size_t pixels = width * height;
+    // Create monochrome image for the source extraction
+    float* mono = (float*)malloc(pixels * sizeof(float));
+    for (size_t i = 0, o = 0; o < pixels; i += components, o += 1) {
+        mono[o] = (idata[i + 0] + idata[i + 1] + idata[i + 2]) / 3.0;
+    }
+
+    // Create the SEP image structure from monochrome data
+    sep_image im = { mono, NULL, NULL, NULL, SEP_TFLOAT,
+        0, 0, 0, width, height, 0.0, SEP_NOISE_NONE, 1.0, 0.0 };
+
+    sep_bkg* bkg = NULL;
+    sep_catalog* catalog = NULL;
+    // Get background and subtract it from the image
+    int status = sep_background(&im, 64, 64, 3, 3, 0.0, &bkg);
+    status = sep_bkg_subarray(bkg, im.data, im.dtype);
+
+    // Get the background data if you want to show it
+    float* bgdata = (float*)malloc(pixels * sizeof(float));
+    sep_bkg_array(bkg, bgdata, SEP_TFLOAT);
+
+    float conv[] = { 1,2,1, 2,4,2, 1,2,1 };
+
+    // Call the main source extraction algorithm
+    // int sep_extract(sep_image * image, float thresh, int thresh_type,
+    //     int minarea, float* conv, int convw, int convh,
+    //     int filter_type, int deblend_nthresh, double deblend_cont,
+    //     int clean_flag, double clean_param,
+    //     sep_catalog * *catalog)
+    int rv = sep_extract(&im, 10.0 * bkg->globalrms, SEP_THRESH_ABS,
+        5, conv, 3, 3, SEP_FILTER_CONV,
+        32, 1.0, 1, 1.0, &catalog);
+
+    if (catalog) {
+        printf("Extracted %d stars from field-01\n", catalog->nobj);
+        starxy_t* starxy = starxy_new(catalog->nobj, TRUE, TRUE);
+        for (size_t i = 0; i < catalog->nobj; i += 1) {
+            double x = catalog->x[i];
+            double y = catalog->y[i];
+            printf("Star %zd: %f / %f\n", i,
+                catalog->x[i], catalog->y[i]);
+        }
+    }
 
     PMYDATA pDataArray[MAX_THREADS];
     DWORD   dwThreadIdArray[MAX_THREADS];
@@ -406,6 +489,13 @@ int main() {
         pDataArray[i]->ntry = &ntry;
         pDataArray[i]->ghMutex = ghMutex;
         pDataArray[i]->cancel = &cancel;
+
+        pDataArray[i]->width =  width;
+        pDataArray[i]->height = height;
+
+        pDataArray[i]->nstars = catalog->nobj;
+        pDataArray[i]->starsx = catalog->x;
+        pDataArray[i]->starsy = catalog->y;
 
         // Create the thread to begin execution on its own.
         hThreadArray[i] = CreateThread(
@@ -689,8 +779,8 @@ DWORD WINAPI SolverThread(LPVOID lpParam)
         sp->max_cpu_time = 60000;
         sp->max_wall_time = 90000;
 
-        sp->funits_lower = deg2arcsec(0.1) / width;
-        sp->funits_upper = deg2arcsec(180.0) / width;
+        sp->funits_lower = deg2arcsec(0.1) / pDataArray->width;
+        sp->funits_upper = deg2arcsec(180.0) / pDataArray->width;
 
         // gotta keep it to solve it!
         sp->logratio_tokeep = MIN(sp->logratio_tokeep, log(1e9));
@@ -698,23 +788,23 @@ DWORD WINAPI SolverThread(LPVOID lpParam)
         sp->logratio_toprint = MIN(sp->logratio_toprint, sp->logratio_tokeep);
 
         // don't try teeny-tiny quads.
-        sp->quadsize_min = 0.1 * MIN(width, height);
+        sp->quadsize_min = 0.1 * MIN(pDataArray->width, pDataArray->height);
 
         sp->do_tweak = true;
         sp->tweak_aborder = 2; // DEFAULT_TWEAK_ABORDER
         sp->tweak_abporder = 2; // DEFAULT_TWEAK_ABPORDER
 
-        sp->field_maxx = width;
-        sp->field_maxy = height;
+        sp->field_maxx = pDataArray->width;
+        sp->field_maxy = pDataArray->height;
 
         sp->cancel = pDataArray->cancel;
 
-        sp->fieldxy_orig = starxy_new(nstars, false, false);
-        sp->fieldxy_orig->x = starsx;
-        sp->fieldxy_orig->y = starsy;
+        sp->fieldxy_orig = starxy_new(pDataArray->nstars, false, false);
+        // sp->fieldxy_orig->N = pDataArray->nstars;
+        sp->fieldxy_orig->x = pDataArray->starsx;
+        sp->fieldxy_orig->y = pDataArray->starsy;
         // sp->fieldxy_orig->flux = NULL;
         // sp->fieldxy_orig->background = NULL;
-        sp->fieldxy_orig->N = nstars;
 
         onefield_solve(sp);
 

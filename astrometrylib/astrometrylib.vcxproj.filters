@@ -43,6 +43,15 @@
     <Filter Include="Header Files\astrometry.net\containers">
       <UniqueIdentifier>{830ca298-8c38-4f2c-a4ca-af81c0962f2d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\sextractor">
+      <UniqueIdentifier>{6c2cbd21-9d84-49e6-97bc-ed106bd9d980}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\sextractor">
+      <UniqueIdentifier>{4a709bac-bff2-4c4f-a785-44e86f857e05}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\stb">
+      <UniqueIdentifier>{04a48bdf-792a-41bf-9a0e-8a3f4d837bfa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="astrometrylib.cpp">
@@ -128,6 +137,30 @@
     </ClCompile>
     <ClCompile Include="src\solver\onefield.c">
       <Filter>Source Files\astrometry.net\solver</Filter>
+    </ClCompile>
+    <ClCompile Include="..\vendor\sep\extract.c">
+      <Filter>Source Files\sextractor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\vendor\sep\lutz.c">
+      <Filter>Source Files\sextractor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\vendor\sep\util.c">
+      <Filter>Source Files\sextractor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\vendor\sep\analyse.c">
+      <Filter>Source Files\sextractor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\vendor\sep\aperture.c">
+      <Filter>Source Files\sextractor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\vendor\sep\background.c">
+      <Filter>Source Files\sextractor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\vendor\sep\convolve.c">
+      <Filter>Source Files\sextractor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\vendor\sep\deblend.c">
+      <Filter>Source Files\sextractor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -220,6 +253,27 @@
     </ClInclude>
     <ClInclude Include="src\include\index.h">
       <Filter>Header Files\astrometry.net\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\vendor\stb\stb_image_resize.h">
+      <Filter>Header Files\stb</Filter>
+    </ClInclude>
+    <ClInclude Include="..\vendor\stb\stb_image_write.h">
+      <Filter>Header Files\stb</Filter>
+    </ClInclude>
+    <ClInclude Include="..\vendor\stb\stb_image.h">
+      <Filter>Header Files\stb</Filter>
+    </ClInclude>
+    <ClInclude Include="..\vendor\sep\overlap.h">
+      <Filter>Header Files\sextractor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\vendor\sep\sep.h">
+      <Filter>Header Files\sextractor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\vendor\sep\sepcore.h">
+      <Filter>Header Files\sextractor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\vendor\sep\extract.h">
+      <Filter>Header Files\sextractor</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

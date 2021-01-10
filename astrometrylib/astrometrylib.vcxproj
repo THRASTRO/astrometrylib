@@ -94,9 +94,9 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>src/include;../vendor/gsl</AdditionalIncludeDirectories>
       <ModuleOutputFile>build/$(IntDir)</ModuleOutputFile>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <AdditionalIncludeDirectories>src/include;../vendor/gsl;../vendor/stb;../vendor/sep</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -113,8 +113,8 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>src/include;../vendor/gsl</AdditionalIncludeDirectories>
       <ModuleOutputFile>build/$(IntDir)</ModuleOutputFile>
+      <AdditionalIncludeDirectories>src/include;../vendor/gsl;../vendor/stb;../vendor/sep</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -131,9 +131,9 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>src/include;../vendor/gsl</AdditionalIncludeDirectories>
       <ModuleOutputFile>build/$(IntDir)</ModuleOutputFile>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <AdditionalIncludeDirectories>src/include;../vendor/gsl;../vendor/stb;../vendor/sep</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -150,8 +150,8 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>src/include;../vendor/gsl</AdditionalIncludeDirectories>
       <ModuleOutputFile>build/$(IntDir)</ModuleOutputFile>
+      <AdditionalIncludeDirectories>src/include;../vendor/gsl;../vendor/stb;../vendor/sep</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -163,6 +163,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\vendor\sep\analyse.c" />
+    <ClCompile Include="..\vendor\sep\aperture.c" />
+    <ClCompile Include="..\vendor\sep\background.c" />
+    <ClCompile Include="..\vendor\sep\convolve.c" />
+    <ClCompile Include="..\vendor\sep\deblend.c" />
+    <ClCompile Include="..\vendor\sep\extract.c" />
+    <ClCompile Include="..\vendor\sep\lutz.c" />
+    <ClCompile Include="..\vendor\sep\util.c" />
     <ClCompile Include="astrometrylib.cpp" />
     <ClCompile Include="src\libkd\kdint_ddd.c" />
     <ClCompile Include="src\libkd\kdint_dds.c" />
@@ -193,6 +201,13 @@
     <ClCompile Include="src\util\starxy.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\vendor\sep\extract.h" />
+    <ClInclude Include="..\vendor\sep\overlap.h" />
+    <ClInclude Include="..\vendor\sep\sep.h" />
+    <ClInclude Include="..\vendor\sep\sepcore.h" />
+    <ClInclude Include="..\vendor\stb\stb_image.h" />
+    <ClInclude Include="..\vendor\stb\stb_image_resize.h" />
+    <ClInclude Include="..\vendor\stb\stb_image_write.h" />
     <ClInclude Include="src\include\compat.h" />
     <ClInclude Include="src\include\fit-wcs.h" />
     <ClInclude Include="src\include\gslutils.h" />
