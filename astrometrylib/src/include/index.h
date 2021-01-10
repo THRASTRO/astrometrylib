@@ -10,7 +10,11 @@
 #include "starkd.h"
 #include "kdtree.h"
 
-/*
+#ifdef _WIN32
+#include <Windows.h>
+#endif
+ 
+ /*
  * These routines handle loading of index files, which can consist of
  * several files (.skdt.fits , .ckdt.fits, .quad.fits), or a single
  * large file (.fits).
@@ -28,7 +32,9 @@
 typedef struct {
 
     uint8_t* dataptr;
-
+#ifdef _WIN32
+    HANDLE* datamap;
+#endif
     // The actual components of an index.
     kdtree_t* codekd;
     startree_t* starkd;

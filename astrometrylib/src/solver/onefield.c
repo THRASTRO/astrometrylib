@@ -78,12 +78,14 @@ void onefield_solve(solver_t* sp)
     }
     else {
 
+        const char* reason = sp->quit_now ? "aborted" : "failed";
+
         // Field unsolved.
         uint64_t delta_cpu = get_cpu_usage() - sp->start_tcpu;
         uint64_t delta_wall = get_wall_time() - sp->start_twall;
         printf("----------------------------------------------------\n");
-        printf("Field failed after %.2fs (used %.2fs cpu time).\n",
-            delta_wall / 1000.0, delta_cpu / 1000.0);
+        printf("Field %s after %.2fs (used %.2fs cpu time).\n",
+            reason, delta_wall / 1000.0, delta_cpu / 1000.0);
         printf("Did %d code searches, and %d star field matches.\n",
             sp->code_searches, sp->star_searches);
         printf("INDEX: %s\n", sp->index->indexfn);

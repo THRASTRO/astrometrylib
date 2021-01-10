@@ -76,6 +76,51 @@ struct anidx_table_header {
 void anidx_load(const char* fname, index_t* index)
 {
 
+#ifdef _WIN32
+
+    OFSTRUCT  _buffer;
+    HANDLE fh = OpenFile(
+        fname,
+        &_buffer,
+        OF_READ
+    );
+
+    if (!fh) {
+        printf("Could not open %s\n", fname);
+        exit(1);
+    }
+
+    LARGE_INTEGER sz;
+    GetFileSizeEx(fh, &sz);
+
+    HANDLE* mmap = CreateFileMappingA(
+        fh,
+        NULL, //  LPSECURITY_ATTRIBUTES lpFileMappingAttributes,
+        PAGE_READONLY, // DWORD flProtect,
+        0, // DWORD dwMaximumSizeHigh,
+        0, // DWORD dwMaximumSizeLow,
+        NULL // LPCSTR lpName
+    );
+
+    if (mmap == 0) {
+        printf("Could not create mmap %d\n", GetLastError());
+        exit(1);
+    }
+
+    uint8_t* dataptr = (uint8_t*)(MapViewOfFile(mmap, FILE_MAP_READ, 0, 0, sz.QuadPart));
+
+    if (dataptr == 0) {
+        printf("Could not create map view %d\n", GetLastError());
+        exit(1);
+    }
+
+    index->datamap = mmap;
+    index->dataptr = 0;
+
+    CloseHandle(fh);
+
+#else
+
     FILE* fh;
     fopen_s(&fh, fname, "rb");
     if (!fh) {
@@ -89,6 +134,8 @@ void anidx_load(const char* fname, index_t* index)
     index->dataptr = dataptr;
     fread(dataptr, sz, 1, fh);
     fseek(fh, 0L, SEEK_SET);
+
+#endif
 
     struct anidx_header* header = (struct anidx_header*) dataptr;
 
@@ -204,7 +251,9 @@ void anidx_load(const char* fname, index_t* index)
 
     }
 
+#ifndef _WIN32
     fclose(fh);
+#endif
 
     int nnodes, nbottom;
 
@@ -255,6 +304,10 @@ void anindex_free(index_t* index) {
     // free(index->quads);
     // free(index->starkd->sweep);
     free(index->dataptr);
+
+#ifdef _WIN32
+    CloseHandle(index->datamap);
+#endif
 
     index->codekd->lr = 0;
     index->codekd->split.any = 0;
