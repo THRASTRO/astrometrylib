@@ -420,12 +420,12 @@ int main() {
 
     int width, height, components;
 
-    const char* fnimg = "../test/field-02.jpg";
+    const char* fnimg = "../test/field-03.png";
 
     FILE* imgfh;
     fopen_s(&imgfh, fnimg, "rb");
     if (!imgfh) {
-        printf("Could not open %s\n", fnimg);
+        logerr("Could not open %s\n", fnimg);
         exit(1);
     }
 
@@ -434,11 +434,11 @@ int main() {
     // E.g. 3 for rgb images, 4 for rgba images and 1 for monochrome
     stbi_uc* idata = stbi_load_from_file(imgfh, &width, &height, &components, 0);
     if (idata == NULL) {
-        printf("Could not load image\n");
+        logerr("Could not load image\n");
         exit(1);
     }
     if (components < 3) {
-        printf("Not enough pixel components (rgb expected)\n");
+        logerr("Not enough pixel components (rgb expected)\n");
         exit(1);
     }
 
@@ -482,12 +482,12 @@ int main() {
 
     if (catalog) {
         sep_sort_catalog(catalog, cmp_sep_flux);
-        printf("Extracted %d stars from field-01\n", catalog->nobj);
+        logdebug("Extracted %d stars from field-01\n", catalog->nobj);
         starxy_t* starxy = starxy_new(catalog->nobj, TRUE, TRUE);
         for (size_t i = 0; i < catalog->nobj; i += 1) {
             double x = catalog->x[i];
             double y = catalog->y[i];
-            printf("Star %zd: %f / %f (%f)\n", i,
+            logdebug("Star %zd: %f / %f (%f)\n", i,
                 catalog->x[i], catalog->y[i],
                 catalog->flux[i]);
         }
@@ -525,7 +525,7 @@ int main() {
             // If the array allocation fails, the system is out of memory
             // so there is no point in trying to print an error message.
             // Just terminate execution.
-            printf("EXIT MOTHER\n");
+            logmsg("EXIT MOTHER\n");
             ExitProcess(2);
         }
 
@@ -561,11 +561,11 @@ int main() {
         }
     }
 
-    printf("WAIT FOR SOLVER THREADS\n");
+    logmsg("WAIT FOR SOLVER THREADS\n");
 
     WaitForMultipleObjects(MAX_THREADS, hThreadArray, TRUE, INFINITE);
 
-    printf("FINSIHED WAITING\n");
+    logmsg("FINSIHED WAITING\n");
 
     // Close all thread handles and free memory allocations.
     for (int i = 0; i < MAX_THREADS; i++)
@@ -804,19 +804,19 @@ DWORD WINAPI SolverThread(LPVOID lpParam)
             *(pDataArray->ntry) += 1;
             if (!ReleaseMutex(pDataArray->ghMutex))
             {
-                printf("ERROR ReleaseMutex\n");
+                logerr("ERROR ReleaseMutex\n");
                 // Handle error.
             }
             break;
         case WAIT_ABANDONED:
             return 1;
-                printf("WAIT_ABANDONED\n");
+                logerr("WAIT_ABANDONED\n");
             break;
         }
 
         if (idx >= nindexes) return 0;
         add_index(sp, indexes[idx]);
-        printf("Try %s\n", indexes[idx]);
+        logmsg("Try %s\n", indexes[idx]);
 
         sp->parity = DEFAULT_PARITY;
 
@@ -876,16 +876,16 @@ DWORD WINAPI SolverThread(LPVOID lpParam)
 
             printf("Number of Matches:  %d\n", sp->best_match.nmatch);
             printf("Solved with index:  %d\n", sp->best_match.indexid);
-            printf("Field center: (RA,Dec) = (%f, %f) deg.\n", ra, dec);
+            printf("####################################################\n");
+            printf("Field center: (RA, Dec) = (%f, %f) deg.\n", ra, dec);
             printf("Field center: (RA H:M:S, Dec D:M:S) = (%s, %s).\n", rastr, decstr);
             printf("Field size: %g x %g %s\n", fieldw, fieldh, fieldunits);
             printf("Field rotation angle: up is %g degrees E of N\n", orient);
+            printf("####################################################\n");
 
             // if (m_UsePosition)
             //     printf(QString("Field is: (%1, %2) deg from search coords.").arg(raErr).arg(decErr));
-            // printf(QString("Field size: %1 x %2 %3").arg(fieldw).arg(fieldh).arg(fieldunits));
             // printf(QString("Pixel Scale: %1\"").arg(pixscale));
-            // printf(QString("Field rotation angle: up is %1 degrees E of N").arg(orient));
             // printf(QString("Field parity: %1\n").arg(parity));
         }
 
@@ -896,13 +896,13 @@ DWORD WINAPI SolverThread(LPVOID lpParam)
 
         // Abort if a cancel was requested
         if (sp->cancel && *sp->cancel) {
-            printf("CANCEL THREAD\n");
+            logmsg("CANCEL THREAD\n");
             break;
         }
 
     }
 
-    printf("FINISHED THREAD\n");
+    logmsg("FINISHED THREAD\n");
 
     return 0;
 }
