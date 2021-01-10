@@ -275,5 +275,8 @@
     <ClInclude Include="..\vendor\sep\extract.h">
       <Filter>Header Files\sextractor</Filter>
     </ClInclude>
+    <ClInclude Include="astrometrylib.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

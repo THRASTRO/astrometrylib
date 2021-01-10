@@ -9,23 +9,7 @@
 #include <tchar.h>
 #include <strsafe.h>
 
-#define MAX_THREADS 12
-#define BUF_SIZE 255
-
-DWORD WINAPI SolverThread(LPVOID lpParam);
-
-// Request implementation for unit
-#define STB_IMAGE_IMPLEMENTATION
-
-extern "C" {
-#include "anidx.h"
-#include "solver.h"
-#include "onefield.h"
-#include "sip-utils.h"
-#include "mathutil.h"
-#include "stb_image.h"
-#include "sep.h"
-}
+#include "astrometrylib.hpp"
 
 static void add_index(solver_t* sp, const char* fname) {
 
@@ -372,6 +356,61 @@ typedef struct MyData {
     uint32_t height;
 } MYDATA, * PMYDATA;
 
+int cmp_sep_flux(const void* a, const void* b)
+{
+    sep_catalog_idx* idx1 = (sep_catalog_idx*)a;
+    sep_catalog_idx* idx2 = (sep_catalog_idx*)b;
+    float flux1 = idx1->cat->flux[idx1->idx];
+    float flux2 = idx2->cat->flux[idx2->idx];
+    return (flux1 < flux2) - (flux1 > flux2);
+}
+
+void sep_sort_catalog(sep_catalog* catalog, int (*cmp)(const void* a, const void* b))
+{
+    sep_catalog_idx* sorted = (sep_catalog_idx*)malloc(catalog->nobj * sizeof(sep_catalog_idx));
+
+    for (int i = 0; i < catalog->nobj; i += 1) {
+        sorted[i].cat = catalog;
+        sorted[i].idx = i;
+    }
+
+    qsort(sorted, catalog->nobj, sizeof(sep_catalog_idx), cmp);
+
+    sep_resort_array(sorted, catalog->nobj, catalog->npix);
+    sep_resort_array(sorted, catalog->nobj, catalog->tnpix);
+    sep_resort_array(sorted, catalog->nobj, catalog->xmin);
+    sep_resort_array(sorted, catalog->nobj, catalog->xmax);
+    sep_resort_array(sorted, catalog->nobj, catalog->ymin);
+    sep_resort_array(sorted, catalog->nobj, catalog->ymax);
+    sep_resort_array(sorted, catalog->nobj, catalog->x);
+    sep_resort_array(sorted, catalog->nobj, catalog->y);
+    sep_resort_array(sorted, catalog->nobj, catalog->x2);
+    sep_resort_array(sorted, catalog->nobj, catalog->y2);
+    sep_resort_array(sorted, catalog->nobj, catalog->xy);
+    sep_resort_array(sorted, catalog->nobj, catalog->errx2);
+    sep_resort_array(sorted, catalog->nobj, catalog->erry2);
+    sep_resort_array(sorted, catalog->nobj, catalog->errxy);
+    sep_resort_array(sorted, catalog->nobj, catalog->a);
+    sep_resort_array(sorted, catalog->nobj, catalog->b);
+    sep_resort_array(sorted, catalog->nobj, catalog->theta);
+    sep_resort_array(sorted, catalog->nobj, catalog->cxx);
+    sep_resort_array(sorted, catalog->nobj, catalog->cyy);
+    sep_resort_array(sorted, catalog->nobj, catalog->cxy);
+    sep_resort_array(sorted, catalog->nobj, catalog->cflux);
+    sep_resort_array(sorted, catalog->nobj, catalog->flux);
+    sep_resort_array(sorted, catalog->nobj, catalog->cpeak);
+    sep_resort_array(sorted, catalog->nobj, catalog->peak);
+    sep_resort_array(sorted, catalog->nobj, catalog->xcpeak);
+    sep_resort_array(sorted, catalog->nobj, catalog->ycpeak);
+    sep_resort_array(sorted, catalog->nobj, catalog->xpeak);
+    sep_resort_array(sorted, catalog->nobj, catalog->ypeak);
+    sep_resort_array(sorted, catalog->nobj, catalog->flag);
+    sep_resort_array(sorted, catalog->nobj, catalog->pix);
+    sep_resort_array(sorted, catalog->nobj, catalog->objectspix);
+
+    free(sorted);
+}
+
 int main() {
 
     // Reverse will increase CPU time used
@@ -381,7 +420,7 @@ int main() {
 
     int width, height, components;
 
-    const char* fnimg = "../test/field-01.jpg";
+    const char* fnimg = "../test/field-02.jpg";
 
     FILE* imgfh;
     fopen_s(&imgfh, fnimg, "rb");
@@ -438,14 +477,19 @@ int main() {
         5, conv, 3, 3, SEP_FILTER_CONV,
         32, 1.0, 1, 1.0, &catalog);
 
+    // We should probably sort and cut-off
+
+
     if (catalog) {
+        sep_sort_catalog(catalog, cmp_sep_flux);
         printf("Extracted %d stars from field-01\n", catalog->nobj);
         starxy_t* starxy = starxy_new(catalog->nobj, TRUE, TRUE);
         for (size_t i = 0; i < catalog->nobj; i += 1) {
             double x = catalog->x[i];
             double y = catalog->y[i];
-            printf("Star %zd: %f / %f\n", i,
-                catalog->x[i], catalog->y[i]);
+            printf("Star %zd: %f / %f (%f)\n", i,
+                catalog->x[i], catalog->y[i],
+                catalog->flux[i]);
         }
     }
 
