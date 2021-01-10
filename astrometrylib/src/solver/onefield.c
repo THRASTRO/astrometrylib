@@ -18,7 +18,7 @@ void onefield_solve(solver_t* sp)
 {
 
     // Take initial time-stamps (ms)
-    sp->start_tcpu = get_cpu_usage();
+    sp->start_tcpu = get_cpu_usage(false);
     sp->start_twall = get_wall_time();
 
     if (!sp->fieldxy_orig) {
@@ -58,7 +58,7 @@ void onefield_solve(solver_t* sp)
 
         if (sp->cancel) *sp->cancel = true;
 
-        uint64_t delta_cpu = get_cpu_usage() - sp->start_tcpu;
+        uint64_t delta_cpu = get_cpu_usage(false) - sp->start_tcpu;
         uint64_t delta_wall = get_wall_time() - sp->start_twall;
         printf("++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
         printf("Field solved in %.2fs (used %.2fs cpu time).\n",
@@ -69,7 +69,7 @@ void onefield_solve(solver_t* sp)
     }
     else if (sp->cancel && *sp->cancel) {
 
-        uint64_t delta_cpu = get_cpu_usage() - sp->start_tcpu;
+        uint64_t delta_cpu = get_cpu_usage(false) - sp->start_tcpu;
         uint64_t delta_wall = get_wall_time() - sp->start_twall;
         printf("Field canceled after %.2fs (used %.2fs cpu time).\n",
             delta_wall / 1000.0, delta_cpu / 1000.0);
@@ -79,9 +79,7 @@ void onefield_solve(solver_t* sp)
     else {
 
         const char* reason = sp->quit_now ? "aborted" : "failed";
-
-        // Field unsolved.
-        uint64_t delta_cpu = get_cpu_usage() - sp->start_tcpu;
+        uint64_t delta_cpu = get_cpu_usage(false) - sp->start_tcpu;
         uint64_t delta_wall = get_wall_time() - sp->start_twall;
         printf("----------------------------------------------------\n");
         printf("Field %s after %.2fs (used %.2fs cpu time).\n",

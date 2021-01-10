@@ -6,15 +6,24 @@ uint32_t ENDIAN_DETECTOR = 0x01020304;
 
 #include <Windows.h>
 
-uint64_t get_cpu_usage() {
+uint64_t get_cpu_usage(bool aggregated) {
 
     FILETIME createTime;
     FILETIME exitTime;
     FILETIME kernelTime;
     FILETIME userTime;
 
-    if (GetThreadTimes(GetCurrentThread(),
-        &createTime, &exitTime, &kernelTime, &userTime) != -1)
+    int rv = -1;
+    if (aggregated) {
+        rv = GetProcessTimes(GetCurrentProcess(),
+            &createTime, &exitTime, &kernelTime, &userTime);
+    }
+    else {
+        rv = GetThreadTimes(GetCurrentThread(),
+            &createTime, &exitTime, &kernelTime, &userTime);
+    }
+
+    if (rv != -1)
     {
         ULONGLONG tcpu = userTime.dwHighDateTime;
         tcpu += kernelTime.dwHighDateTime;

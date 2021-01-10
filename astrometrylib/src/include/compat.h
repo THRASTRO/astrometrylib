@@ -24,7 +24,7 @@
 extern uint32_t ENDIAN_DETECTOR;
 
 // Return time in milliseconds
-uint64_t get_cpu_usage();
+uint64_t get_cpu_usage(bool);
 uint64_t get_wall_time();
 
 #ifdef FOO

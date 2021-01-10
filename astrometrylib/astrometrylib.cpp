@@ -354,6 +354,8 @@ typedef struct MyData {
     double* starsy;
     uint32_t width;
     uint32_t height;
+    uint64_t start_tcpu;
+    uint64_t start_twall;
 } MYDATA, * PMYDATA;
 
 int cmp_sep_flux(const void* a, const void* b)
@@ -510,6 +512,9 @@ int main() {
         FALSE,             // initially not owned
         NULL);
 
+    uint64_t start_tcpu = get_cpu_usage(true);
+    uint64_t start_twall = get_wall_time();
+
     // create all threads (not very smart)
     // in reality should e.g. use thread-pool
     for (int i = 0; i < MAX_THREADS; i++)
@@ -540,6 +545,10 @@ int main() {
         pDataArray[i]->nstars = catalog->nobj;
         pDataArray[i]->starsx = catalog->x;
         pDataArray[i]->starsy = catalog->y;
+
+        pDataArray[i]->start_tcpu = start_tcpu;
+        pDataArray[i]->start_twall = start_twall;
+
 
         // Create the thread to begin execution on its own.
         hThreadArray[i] = CreateThread(
@@ -861,8 +870,8 @@ DWORD WINAPI SolverThread(LPVOID lpParam)
 
         if (sp->best_match_solves) {
 
-            uint64_t delta_cpu = get_cpu_usage() - sp->start_tcpu;
-            uint64_t delta_wall = get_wall_time() - sp->start_twall;
+            uint64_t delta_cpu = get_cpu_usage(true) - pDataArray->start_tcpu;
+            uint64_t delta_wall = get_wall_time() - pDataArray->start_twall;
             printf("++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
             printf("Field solved in %.2fs (used %.2fs cpu time).\n",
                 delta_wall / 1000.0, delta_cpu / 1000.0);

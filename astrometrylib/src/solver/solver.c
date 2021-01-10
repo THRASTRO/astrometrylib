@@ -777,7 +777,7 @@ void solver_run(solver_t* solver) {
                 goto quitnow;
             }
 
-            if (solver->max_cpu_time && solver->max_cpu_time < get_cpu_usage() - solver->start_tcpu) {
+            if (solver->max_cpu_time && solver->max_cpu_time < get_cpu_usage(false) - solver->start_tcpu) {
                 solver->quit_now = true;
                 goto quitnow;
             }
