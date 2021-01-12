@@ -61,7 +61,7 @@ void onefield_solve(solver_t* sp)
         uint64_t delta_cpu = get_cpu_usage(false) - sp->start_tcpu;
         uint64_t delta_wall = get_wall_time() - sp->start_twall;
         printf("++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-        printf("Field solved in %.2fs (used %.2fs cpu time).\n",
+        printf("Field solved in %.2fs (used %.2fs CPU time).\n",
             delta_wall / 1000.0, delta_cpu / 1000.0);
         printf("INDEX: %s\n", sp->index->indexfn);
         printf("++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
@@ -71,7 +71,7 @@ void onefield_solve(solver_t* sp)
 
         uint64_t delta_cpu = get_cpu_usage(false) - sp->start_tcpu;
         uint64_t delta_wall = get_wall_time() - sp->start_twall;
-        printf("Field canceled after %.2fs (used %.2fs cpu time).\n",
+        printf("Field canceled after %.2fs (used %.2fs CPU time).\n",
             delta_wall / 1000.0, delta_cpu / 1000.0);
         printf("INDEX: %s\n", sp->index->indexfn);
 
@@ -82,7 +82,7 @@ void onefield_solve(solver_t* sp)
         uint64_t delta_cpu = get_cpu_usage(false) - sp->start_tcpu;
         uint64_t delta_wall = get_wall_time() - sp->start_twall;
         printf("----------------------------------------------------\n");
-        printf("Field %s after %.2fs (used %.2fs cpu time).\n",
+        printf("Field %s after %.2fs (used %.2fs CPU time).\n",
             reason, delta_wall / 1000.0, delta_cpu / 1000.0);
         printf("Did %d code searches, and %d star field matches.\n",
             sp->code_searches, sp->star_searches);

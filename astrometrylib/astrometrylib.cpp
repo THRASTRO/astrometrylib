@@ -334,6 +334,13 @@ int main() {
         }
     }
 
+    uint64_t delta_cpu = get_cpu_usage(true) - start_tcpu;
+    uint64_t delta_wall = get_wall_time() - start_twall;
+    printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
+    printf("Finished after %.2fs (used %.2fs CPU time).\n",
+        delta_wall / 1000.0, delta_cpu / 1000.0);
+    printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
+
     return 0;
 
 }
@@ -615,12 +622,13 @@ DWORD WINAPI SolverThread(LPVOID lpParam)
 
         onefield_solve(sp);
 
+        uint64_t delta_cpu = get_cpu_usage(true) - pDataArray->start_tcpu;
+        uint64_t delta_wall = get_wall_time() - pDataArray->start_twall;
+
         if (sp->best_match_solves) {
 
-            uint64_t delta_cpu = get_cpu_usage(true) - pDataArray->start_tcpu;
-            uint64_t delta_wall = get_wall_time() - pDataArray->start_twall;
             printf("++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-            printf("Field solved in %.2fs (used %.2fs cpu time).\n",
+            printf("Field solved in %.2fs (used %.2fs CPU time).\n",
                 delta_wall / 1000.0, delta_cpu / 1000.0);
             printf("INDEX: %s\n", sp->index->indexfn);
             printf("++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
