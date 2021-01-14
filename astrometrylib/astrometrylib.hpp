@@ -4,7 +4,9 @@
 #define MAX_THREADS 12
 #define BUF_SIZE 255
 
+#ifdef _WIN32
 DWORD WINAPI SolverThread(LPVOID lpParam);
+#endif
 
 // Request implementation for unit
 #define STB_IMAGE_IMPLEMENTATION

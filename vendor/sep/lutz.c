@@ -29,6 +29,7 @@
 #include "sep.h"
 #include "sepcore.h"
 #include "extract.h"
+#include "compat.h"
 
 #define	NOBJ 256  /* starting number of obj. */
 

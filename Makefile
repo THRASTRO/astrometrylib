@@ -175,6 +175,8 @@ else
 	PREFIX ?= $(TRAVIS_BUILD_DIR)
 endif
 
+DEMO_EXE = demo/demo
+
 RESOURCES =
 STATICLIB = lib/astrometrylib.a
 SHAREDLIB = lib/astrometrylib.so
@@ -185,6 +187,7 @@ ifeq ($(UNAME),Darwin)
 	LIB_SHARED = $(ANLIB_PATH)/lib/astrometrylib.dylib
 endif
 ifeq (Windows,$(UNAME))
+	DEMO_EXE = demo/demo.exe
 	RESOURCES += res/resource.rc
 	SHAREDLIB  = lib/astrometrylib.dll
 	ifeq (shared,$(BUILD))
@@ -216,7 +219,7 @@ CLEANUPS += $(HEADOBJS)
 CLEANUPS += $(ANLIB_LIB)
 
 demog.exe: $(BUILD)
-	$(CXX) $(OBJECTS) $(COBJECTS) $(LDFLAGS) $(LDLIBS) -o demo/demo.exe
+	$(CXX) $(OBJECTS) $(COBJECTS) $(LDFLAGS) $(LDLIBS) -o $(DEMO_EXE)
 
 all: demo.exe
 

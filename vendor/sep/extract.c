@@ -29,6 +29,7 @@
 #include "sep.h"
 #include "sepcore.h"
 #include "extract.h"
+#include "compat.h"
 
 #define DETECT_MAXAREA 0             /* replaces prefs.ext_maxarea */
 #define	WTHRESH_CONVFAC	1e-4         /* Factor to apply to weights when */

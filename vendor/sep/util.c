@@ -21,6 +21,7 @@
 #include <string.h>
 #include "sep.h"
 #include "sepcore.h"
+#include "compat.h"
 
 #define DETAILSIZE 512
 

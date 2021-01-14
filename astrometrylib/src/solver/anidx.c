@@ -11,7 +11,8 @@
 #include "anidx.h"
 #include "starutil.h"
 
-static void compute_splitbits(kdtree_t* kd) {
+static void compute_splitbits(kdtree_t* kd)
+{
     int D;
     int bits;
     u32 val;
@@ -121,8 +122,7 @@ void anidx_load(const char* fname, index_t* index)
 
 #else
 
-    FILE* fh;
-    fopen_s(&fh, fname, "rb");
+    FILE* fh = fopen(fname, "rb");
     if (!fh) {
         printf("Could not open %s\n", fname);
         exit(1);

@@ -27,6 +27,7 @@
 #include "sep.h"
 #include "sepcore.h"
 #include "extract.h"
+#include "compat.h"
 
 #ifndef	RAND_MAX
 #define	RAND_MAX 2147483647

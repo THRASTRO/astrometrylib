@@ -47,6 +47,6 @@ uint64_t get_wall_time()
 
 #else
 
-// To be implemented
+# include "compat.unix.inc.c"
 
 #endif

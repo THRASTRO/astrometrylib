@@ -27,6 +27,7 @@
 #include "sep.h"
 #include "sepcore.h"
 #include "extract.h"
+#include "compat.h"
 
 /********************************** cleanprep ********************************/
 /*

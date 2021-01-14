@@ -60,11 +60,16 @@ uint64_t get_wall_time();
 #define strcasecmp _stricmp
 #define streq(a,b) (strcmp((a),(b))==0)
 #define strcaseeq(a,b) (_stricmp((a),(b))==0)
+#else
+
+#define sprintf_s(a,b,c,...) snprintf(a,b,__VA_ARGS__)
+
 #endif
 
 void QSORT_R(void* base, size_t nmembers, size_t member_size,
     void* token, int (*compar)(void*, const void*, const void*));
 
 #define QSORT_COMPARISON_FUNCTION(func, thunk, v1, v2) func(thunk, v1, v2)
+
 
 #endif

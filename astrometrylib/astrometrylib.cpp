@@ -6,10 +6,19 @@
 #include <limits>
 #include <vector>
 
+#ifdef _WIN32
 #include <windows.h>
 #include <tchar.h>
 #include <strsafe.h>
-
+#else
+#define FALSE false
+#define TRUE true
+// code not yet ported to unix
+// rest of library should compile
+#endif
+extern "C" {
+#include "compat.h"
+}
 #include "astrometrylib.hpp"
 
 static void add_index(solver_t* sp, const char* fname) {
@@ -37,13 +46,14 @@ int cmp_str(const void* a, const void* b) {
 
 void load_index_dir(const char* path, char** indexes, int* size)
 {
-    HANDLE hFind;
-    WIN32_FIND_DATAA FindFileData;
     size_t len = strlen(path);
     char* lookup = (char*)malloc(9 + len);
     if (lookup == 0) exit(1);
     memcpy(lookup, path, len);
     memcpy(lookup + len, "/*.anidx", 9);
+#ifdef _WIN32
+    HANDLE hFind;
+    WIN32_FIND_DATAA FindFileData;
     if ((hFind = FindFirstFileA(lookup, &FindFileData)) != INVALID_HANDLE_VALUE) {
         do {
             size_t fsize = strlen(FindFileData.cFileName);
@@ -63,10 +73,11 @@ void load_index_dir(const char* path, char** indexes, int* size)
         FindClose(hFind);
     }
     free(lookup);
-    qsort(indexes, *size, sizeof(char*), cmp_str);
     // for (int i = 0; i < *size; i += 1) {
     //     printf("Index: %s\n", indexes[i]);
     // }
+#endif
+    qsort(indexes, *size, sizeof(char*), cmp_str);
 }
 
 int nindexes = 0;
@@ -91,7 +102,9 @@ void reverse(char* arr[], int n)
 // that can be passed using a single void pointer (LPVOID).
 typedef struct MyData {
     int* ntry;
+#ifdef _WIN32
     HANDLE ghMutex;
+#endif
     bool* cancel;
     int nstars;
     double* starsx;
@@ -172,8 +185,7 @@ int main() {
 
     const char* fnimg = "../test/field-02.jpg";
 
-    FILE* imgfh;
-    fopen_s(&imgfh, fnimg, "rb");
+    FILE* imgfh = fopen(fnimg, "rb");
     if (!imgfh) {
         logerr("Could not open %s\n", fnimg);
         exit(1);
@@ -243,9 +255,8 @@ int main() {
         }
     }
 
-    PMYDATA pDataArray[MAX_THREADS];
-    DWORD   dwThreadIdArray[MAX_THREADS];
-    HANDLE  hThreadArray[MAX_THREADS];
+    uint64_t start_tcpu = get_cpu_usage(true);
+    uint64_t start_twall = get_wall_time();
 
     // next index entry to process
     int ntry = 0;
@@ -254,14 +265,17 @@ int main() {
     // our usage should be thread-safe
     bool cancel = false;
 
+#ifdef _WIN32
+
+    PMYDATA pDataArray[MAX_THREADS];
+    DWORD   dwThreadIdArray[MAX_THREADS];
+    HANDLE  hThreadArray[MAX_THREADS];
+
     // mutex object to access index list
     HANDLE ghMutex = CreateMutex(
         NULL,              // default security attributes
         FALSE,             // initially not owned
         NULL);
-
-    uint64_t start_tcpu = get_cpu_usage(true);
-    uint64_t start_twall = get_wall_time();
 
     // create all threads (not very smart)
     // in reality should e.g. use thread-pool
@@ -334,6 +348,12 @@ int main() {
             pDataArray[i] = NULL;    // Ensure address is not reused.
         }
     }
+
+#else
+
+    printf("NOT YET IMPLEMENTED!\n");
+
+#endif
 
     uint64_t delta_cpu = get_cpu_usage(true) - start_tcpu;
     uint64_t delta_wall = get_wall_time() - start_twall;
@@ -550,6 +570,8 @@ double tan_get_orientation(const tan_t* tan) {
 }
 
 
+#ifdef _WIN32
+
 DWORD WINAPI SolverThread(LPVOID lpParam)
 {
 
@@ -678,3 +700,5 @@ DWORD WINAPI SolverThread(LPVOID lpParam)
 
     return 0;
 }
+
+#endif
