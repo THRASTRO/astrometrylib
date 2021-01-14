@@ -1,7 +1,16 @@
+*.o
 /.vs
 /build
+/lib/*.a
+/lib/*.so
+/lib/*.dll
+/demo/*.a
+/demo/*.so
+/demo/*.dll
+/demo/*.exe
 /vendor/gsl/x86
 /vendor/gsl/x64
+/vendor/gsl/mingw
 /indexes/4100/fits/*.fits
 /indexes/4200/fits/*.fits
 /indexes/4100/anidx/*.anidx

@@ -1,4 +1,5 @@
 #pragma warning (disable : 4996)
+#define STRSAFE_NO_DEPRECATE
 
 #include <cassert>
 #include <iostream>
