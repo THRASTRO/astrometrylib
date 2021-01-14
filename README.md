@@ -2,6 +2,8 @@
 
 Stripped down astrometry.net star plate solver
 
+[![Build Status](https://travis-ci.com/mgreter/astrometrylib.svg?branch=master)](https://travis-ci.com/mgreter/astrometrylib)
+
 ## Overview
 
 [Astrometry.net][1] is an incredibly good star plate solver, but it comes in the form
@@ -22,7 +24,7 @@ like a lookup index, which could be perfectly and easily stored in a binary form
 
 Although the data in the index `fits` tables are also just in binary form, the parsing of
 the various options within the `fits` cards was more than just tedious. Also the used
-`qfits` library was less than idea to port to windows. Therefore it was way easier to
+`qfits` library was less than ideal to port to windows. Therefore it was way easier to
 just convert the `fits` indexes to a binary format which I call `anidx`. Note that the
 index will only work if it matches your machine' endianness (most machines today are
 little-endian, e.g. x86 or x64). The format is not really final (I should probably

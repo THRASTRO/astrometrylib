@@ -320,8 +320,10 @@ int main() {
     // mutex object to access index list
     pthread_mutex_t ghMutex;
     pthread_mutexattr_t ghAttr;
+    pthread_mutexattr_init(&ghAttr);
     pthread_mutexattr_settype(&ghAttr, PTHREAD_MUTEX_NORMAL);
     pthread_mutex_init(&ghMutex, &ghAttr);
+    pthread_mutexattr_destroy(&ghAttr);
 #endif
 
 
