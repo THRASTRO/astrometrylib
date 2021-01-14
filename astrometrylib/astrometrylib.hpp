@@ -6,6 +6,8 @@
 
 #ifdef _WIN32
 DWORD WINAPI SolverThread(LPVOID lpParam);
+#else
+void* SolverThread(void* lpParam);
 #endif
 
 // Request implementation for unit

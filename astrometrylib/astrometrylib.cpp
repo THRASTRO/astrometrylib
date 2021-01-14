@@ -11,6 +11,10 @@
 #include <tchar.h>
 #include <strsafe.h>
 #else
+#include <sys/types.h>
+#include <pthread.h>
+#include <unistd.h>
+#include <dirent.h>
 #define FALSE false
 #define TRUE true
 // code not yet ported to unix
@@ -73,11 +77,46 @@ void load_index_dir(const char* path, char** indexes, int* size)
         FindClose(hFind);
     }
     free(lookup);
+
+#else
+
+    DIR* dir = opendir(path);
+    struct dirent* entry;
+    if(dir != nullptr)
+    {
+        while((entry=readdir(dir)) != nullptr) {
+            size_t fsize = strlen(entry->d_name);
+            if (fsize < 7) continue;
+            if (entry->d_name[fsize-6] != '.') continue;
+            if (entry->d_name[fsize-5] != 'a') continue;
+            if (entry->d_name[fsize-4] != 'n') continue;
+            if (entry->d_name[fsize-3] != 'i') continue;
+            if (entry->d_name[fsize-2] != 'd') continue;
+            if (entry->d_name[fsize-1] != 'x') continue;
+
+            size_t need = len + fsize + 2;
+            indexes[*size] = (char*)malloc(need);
+            if (indexes[*size] == 0) exit(1);
+            memcpy((void*)indexes[*size], path, len);
+            memcpy((void*)(indexes[*size] + len + 1),
+                entry->d_name, fsize + 1);
+            indexes[*size][len] = '/';
+            *size += 1;
+            if (*size > 1024) {
+                printf("Too many indexes\n");
+                exit(1);
+            }
+        }
+    }
+    closedir(dir);
+
+#endif
+
     // for (int i = 0; i < *size; i += 1) {
     //     printf("Index: %s\n", indexes[i]);
     // }
-#endif
     qsort(indexes, *size, sizeof(char*), cmp_str);
+
 }
 
 int nindexes = 0;
@@ -104,6 +143,8 @@ typedef struct MyData {
     int* ntry;
 #ifdef _WIN32
     HANDLE ghMutex;
+#else
+    pthread_mutex_t ghMutex;
 #endif
     bool* cancel;
     int nstars;
@@ -265,17 +306,24 @@ int main() {
     // our usage should be thread-safe
     bool cancel = false;
 
-#ifdef _WIN32
-
     PMYDATA pDataArray[MAX_THREADS];
+#ifdef _WIN32
     DWORD   dwThreadIdArray[MAX_THREADS];
     HANDLE  hThreadArray[MAX_THREADS];
-
     // mutex object to access index list
     HANDLE ghMutex = CreateMutex(
         NULL,              // default security attributes
         FALSE,             // initially not owned
         NULL);
+#else
+    pthread_t hThreadArray[MAX_THREADS];
+    // mutex object to access index list
+    pthread_mutex_t ghMutex;
+    pthread_mutexattr_t ghAttr;
+    pthread_mutexattr_settype(&ghAttr, PTHREAD_MUTEX_NORMAL);
+    pthread_mutex_init(&ghMutex, &ghAttr);
+#endif
+
 
     // create all threads (not very smart)
     // in reality should e.g. use thread-pool
@@ -284,8 +332,12 @@ int main() {
 
         // create the object to pass to the thread
         // will pass pointers to our (shared) data
+#ifdef _WIN32
         pDataArray[i] = (PMYDATA)HeapAlloc(GetProcessHeap(),
             HEAP_ZERO_MEMORY, sizeof(MYDATA));
+#else
+        pDataArray[i] = (PMYDATA)calloc(1, sizeof(MYDATA));
+#endif
 
         if (pDataArray[i] == NULL)
         {
@@ -293,7 +345,11 @@ int main() {
             // so there is no point in trying to print an error message.
             // Just terminate execution.
             logmsg("EXIT MOTHER\n");
+#ifdef _WIN32
             ExitProcess(2);
+#else
+            exit(2);
+#endif
         }
 
         // Generate unique data for each thread to work with.
@@ -312,6 +368,7 @@ int main() {
         pDataArray[i]->start_twall = start_twall;
 
 
+#ifdef _WIN32
         // Create the thread to begin execution on its own.
         hThreadArray[i] = CreateThread(
             NULL,                   // default security attributes
@@ -320,7 +377,10 @@ int main() {
             pDataArray[i],          // argument to thread function 
             0,                      // use default creation flags 
             &dwThreadIdArray[i]);   // returns the thread identifier 
-
+#else
+        pthread_create(&hThreadArray[i], NULL, SolverThread, pDataArray[i]);
+        // pthread_setname_np(hThreadArray[i], "ANLIB-Worker");
+#endif
 
         // Check the return value for success.
         // If CreateThread fails, terminate execution. 
@@ -328,32 +388,46 @@ int main() {
         if (hThreadArray[i] == NULL)
         {
             // ErrorHandler("CreateThread");
+#ifdef _WIN32
             ExitProcess(3);
+#else
+            exit(3);
+#endif
         }
     }
 
     logmsg("WAIT FOR SOLVER THREADS\n");
 
+#ifdef _WIN32
     WaitForMultipleObjects(MAX_THREADS, hThreadArray, TRUE, INFINITE);
+#else
+    for (int i = 0; i < MAX_THREADS; i++)
+    {
+        // Would give us back exit value of thread
+        pthread_join(hThreadArray[i], nullptr);
+    }
+#endif
 
     logmsg("FINSIHED WAITING\n");
 
     // Close all thread handles and free memory allocations.
     for (int i = 0; i < MAX_THREADS; i++)
     {
+#ifdef _WIN32
         CloseHandle(hThreadArray[i]);
+#else
+//        fclose(hThreadArray[i]);
+#endif
         if (pDataArray[i] != NULL)
         {
+#ifdef _WIN32
             HeapFree(GetProcessHeap(), 0, pDataArray[i]);
+#else
+            free(pDataArray[i]);
+#endif
             pDataArray[i] = NULL;    // Ensure address is not reused.
         }
     }
-
-#else
-
-    printf("NOT YET IMPLEMENTED!\n");
-
-#endif
 
     uint64_t delta_cpu = get_cpu_usage(true) - start_tcpu;
     uint64_t delta_wall = get_wall_time() - start_twall;
@@ -571,8 +645,10 @@ double tan_get_orientation(const tan_t* tan) {
 
 
 #ifdef _WIN32
-
 DWORD WINAPI SolverThread(LPVOID lpParam)
+#else
+void* SolverThread(void* lpParam)
+#endif
 {
 
     // Cast the parameter to the correct data type.
@@ -585,11 +661,11 @@ DWORD WINAPI SolverThread(LPVOID lpParam)
         int idx = 0;
         solver_t* sp = solver_new();
 
+#ifdef _WIN32
         // Acquire exclusive access to globals
         DWORD dwWaitResult = WaitForSingleObject(
             pDataArray->ghMutex, // handle to mutex
             INFINITE);  // no time-out interval
-
         switch (dwWaitResult)
         {
         case WAIT_OBJECT_0:
@@ -606,6 +682,16 @@ DWORD WINAPI SolverThread(LPVOID lpParam)
                 logerr("WAIT_ABANDONED\n");
             break;
         }
+#else
+        if (pthread_mutex_lock(&pDataArray->ghMutex)) {
+            logerr("ERROR aquiring lock\n");
+        }
+        idx = *(pDataArray->ntry);
+        *(pDataArray->ntry) += 1;
+        if (pthread_mutex_unlock(&pDataArray->ghMutex)) {
+            logerr("ERROR releasing lock\n");
+        }
+#endif
 
         if (idx >= nindexes) return 0;
         add_index(sp, indexes[idx]);
@@ -698,7 +784,10 @@ DWORD WINAPI SolverThread(LPVOID lpParam)
 
     logmsg("FINISHED THREAD\n");
 
+#ifdef _WIN32
     return 0;
+#else
+    return nullptr;
+#endif
 }
 
-#endif

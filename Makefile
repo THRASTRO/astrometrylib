@@ -56,7 +56,7 @@ endif
 endif
 endif
 
-LDFLAGS += -lgsl
+LDFLAGS += -lpthread -lgsl
 
 ifndef ANLIB_VERSION
 	ifneq ($(wildcard ./.git/ ),)
