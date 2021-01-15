@@ -1,4 +1,4 @@
-#pragma warning (disable : 4996)
+// #pragma warning (disable : 4996)
 #define STRSAFE_NO_DEPRECATE
 
 #include <cassert>
@@ -295,9 +295,9 @@ int main() {
         if (catalog->nobj < cutoff) cutoff = catalog->nobj;
         logdebug("Extracted %d stars from field-01\n", catalog->nobj);
         // starxy_t* starxy = starxy_new(cutoff, TRUE, TRUE);
-        for (size_t i = 0; i < catalog->nobj; i += 1) {
-            double x = catalog->x[i];
-            double y = catalog->y[i];
+        for (int i = 0; i < catalog->nobj; i += 1) {
+            // double x = catalog->x[i];
+            // double y = catalog->y[i];
             logdebug("Star %zd: %f / %f (%f)\n", i,
                 catalog->x[i], catalog->y[i],
                 catalog->flux[i]);

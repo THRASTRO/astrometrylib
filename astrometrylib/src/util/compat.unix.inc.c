@@ -18,7 +18,7 @@ uint64_t get_cpu_usage(bool aggregated)
     uint64_t sofar;
     if (getrusage(aggregated ? RUSAGE_SELF : RUSAGE_THREAD, &r)) {
         SYSERROR("Failed to get resource usage");
-        return -1.0;
+        return 0.0;
     }
     sofar = 1e+3 * (r.ru_utime.tv_sec + r.ru_stime.tv_sec) +
         1e-3 * (r.ru_utime.tv_usec + r.ru_stime.tv_usec);
@@ -30,5 +30,6 @@ uint64_t get_wall_time()
 {
     struct timeval tv;
     int rv = gettimeofday(&tv, NULL);
+    if (rv == 0) return 0.0;
     return tv.tv_sec * 1e+3 + tv.tv_usec * 1e-3;
 }

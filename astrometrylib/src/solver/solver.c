@@ -139,10 +139,9 @@ void solver_log_params(const solver_t* sp) {
     logverb("  Objs: %i, %i\n", sp->startobj, sp->endobj);
     logverb("  Parity: %i, %s\n", sp->parity, sp->parity == PARITY_NORMAL ? "normal" : (sp->parity == PARITY_FLIP ? "flip" : "both"));
     if (sp->use_radec) {
-        double ra,dec,rad;
+        double ra,dec;
         xyzarr2radecdeg(sp->centerxyz, &ra, &dec);
-        rad = distsq2deg(sp->r2);
-        logverb("  Use_radec? yes, (%g, %g), radius %g deg\n", ra, dec, rad);
+        logverb("  Use_radec? yes, (%g, %g), radius %g deg\n", ra, dec, distsq2deg(sp->r2));
     } else {
         logverb("  Use_radec? no\n");
     }
@@ -170,8 +169,7 @@ void solver_log_params(const solver_t* sp) {
     }
     logverb("  Indexes: %zu\n", sp->nindexes);
     for (i=0; i<sp->nindexes; i++) {
-        index_t* ind = sp->indexes[i];
-        logverb("    %s\n", ind->indexname);
+        logverb("    %s\n", sp->indexes[i]->indexname);
     }
     if (sp->fieldxy) {
       logverb("  Field (processed): %i stars\n", starxy_n(sp->fieldxy));

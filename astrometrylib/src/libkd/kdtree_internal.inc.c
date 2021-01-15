@@ -1425,30 +1425,30 @@ kdtree_qres_t* MANGLE(kdtree_rangesearch_options)
 }
 
 
-static void* get_data(const kdtree_t* kd, int i) {
-    return KD_DATA(kd, kd->ndim, i);
-}
+// static void* get_data(const kdtree_t* kd, int i) {
+//     return KD_DATA(kd, kd->ndim, i);
+// }
 
-static void copy_data_double(const kdtree_t* kd, int start, int N,
-                             double* dest) {
-    int D = kd->ndim;
-#if DTYPE_DOUBLE
-    //#warning "Data type is double; just copying data."
-    memcpy(dest, kd->data.DTYPE + start*D, N*D*sizeof(etype));
-#elif (!DTYPE_INTEGER && !ETYPE_INTEGER)
-    //#warning "Etype and Dtype are both reals; just casting values."
-    for (int i=0; i<(N * D); i++)
-        dest[i] = kd->data.DTYPE[start*D + i];
-#else
-    //#warning "Using POINT_DE to convert data."
-    int j=0;
-    for (int i=0; i<N; i++)
-        for (int d=0; d<D; d++) {
-            dest[j] = POINT_DE(kd, D, kd->data.DTYPE[(start + i)*D + d]);
-            j++;
-        }
-#endif
-}
+// static void copy_data_double(const kdtree_t* kd, int start, int N,
+//                              double* dest) {
+//     int D = kd->ndim;
+// #if DTYPE_DOUBLE
+//     //#warning "Data type is double; just copying data."
+//     memcpy(dest, kd->data.DTYPE + start*D, N*D*sizeof(etype));
+// #elif (!DTYPE_INTEGER && !ETYPE_INTEGER)
+//     //#warning "Etype and Dtype are both reals; just casting values."
+//     for (int i=0; i<(N * D); i++)
+//         dest[i] = kd->data.DTYPE[start*D + i];
+// #else
+//     //#warning "Using POINT_DE to convert data."
+//     int j=0;
+//     for (int i=0; i<N; i++)
+//         for (int d=0; d<D; d++) {
+//             dest[j] = POINT_DE(kd, D, kd->data.DTYPE[(start + i)*D + d]);
+//             j++;
+//         }
+// #endif
+// }
 
 static dtype* kdqsort_arr;
 static int kdqsort_D;

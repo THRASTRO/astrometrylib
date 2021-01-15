@@ -1195,10 +1195,10 @@ void verify_hit(const startree_t* skdt, int index_cutnside, MatchObj* mo,
     debug("Field center %g,%g,%g, radius2 %g\n", fieldcenter[0], fieldcenter[1], fieldcenter[2], fieldr2);
 
     /*if (log_get_level() >= LOG_VERB)*/ {
-        double ra,dec, r;
+        double ra,dec;
         xyzarr2radecdeg(fieldcenter, &ra, &dec);
-        r = distsq2deg(fieldr2);
-        debug("Field center RA,Dec %g,%g, radius %g deg\n", ra, dec, r);
+        debug("Field center RA,Dec %g,%g, radius %g deg\n",
+            ra, dec, distsq2deg(fieldr2));
     }
 
     // find index stars and project them into pixel coordinates.

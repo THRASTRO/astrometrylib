@@ -40,16 +40,16 @@ uint64_t get_wall_time();
 #else
 #define SYSERROR printf
 #define ANERROR printf
-#define debug
-#define logmsg
-#define logerr
-#define logverb
-#define logdebug 
+#define debug(...)
+#define logmsg(...)
+#define logerr(...)
+#define logverb(...)
+#define logdebug(...)
 #define loglevel(lvl, fmt, ...)
 #endif
 #define debug2(...)
 // #define qfits_error printf
-#define qdebug
+#define qdebug(...)
 
 // MSVC compatibility
 #ifdef _MSC_VER
@@ -62,7 +62,7 @@ uint64_t get_wall_time();
 #define strcaseeq(a,b) (_stricmp((a),(b))==0)
 #else
 
-#define sprintf_s(a,b,c,...) snprintf(a,b,__VA_ARGS__)
+#define sprintf_s(a,b,c,...) snprintf(a,b,c,__VA_ARGS__)
 
 #endif
 

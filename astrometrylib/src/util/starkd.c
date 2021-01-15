@@ -8,14 +8,14 @@
 #include "starkd.h"
 #include "starutil.h"
 
-static startree_t* startree_alloc() {
-    startree_t* s = calloc(1, sizeof(startree_t));
-    if (!s) {
-        fprintf(stderr, "Failed to allocate a star kdtree struct.\n");
-        return NULL;
-    }
-    return s;
-}
+//static startree_t* startree_alloc() {
+//    startree_t* s = calloc(1, sizeof(startree_t));
+//    if (!s) {
+//        fprintf(stderr, "Failed to allocate a star kdtree struct.\n");
+//        return NULL;
+//    }
+//    return s;
+//}
 
 void startree_search_for(const startree_t* s, const double* xyzcenter, double radius2,
                          double** xyzresults, double** radecresults,

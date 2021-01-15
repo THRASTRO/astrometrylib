@@ -132,7 +132,10 @@ void anidx_load(const char* fname, index_t* index)
     fseek(fh, 0L, SEEK_SET);
     uint8_t* dataptr = calloc(1, sz);
     index->dataptr = dataptr;
-    fread(dataptr, sz, 1, fh);
+    if (fread(dataptr, sz, 1, fh) != 1) {
+        printf("Error reading file %s\n", fname);
+        exit(1);
+    }
     fseek(fh, 0L, SEEK_SET);
 
 #endif
@@ -169,8 +172,6 @@ void anidx_load(const char* fname, index_t* index)
     if (index->index_jitter == 0.0) {
         index->index_jitter = DEFAULT_INDEX_JITTER;
     }
-
-    int rv = 0;
 
     index->codekd = calloc(1, sizeof(kdtree_t));
     index->starkd = calloc(1, sizeof(startree_t));
