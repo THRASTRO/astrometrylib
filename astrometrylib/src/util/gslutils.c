@@ -60,7 +60,7 @@ int gslutils_solve_leastsquares(gsl_matrix* A, gsl_vector** B,
     int i;
     gsl_vector *tau, *resid = NULL;
     int ret;
-    int M, N;
+    size_t M, N;
 
     M = A->size1;
     N = A->size2;

@@ -29,10 +29,6 @@ bool index_is_within_range(index_t* meta, double ra, double dec, double radius_d
     return (healpix_distance_to_radec(meta->healpix, meta->hpnside, ra, dec, NULL) <= radius_deg);
 }
 
-//int index_nstars(const index_t* index) {
-//    return startree_N(index->starkd);
-//}
-
 int index_dimquads(index_t* indx) {
     return indx->dimquads;
 }

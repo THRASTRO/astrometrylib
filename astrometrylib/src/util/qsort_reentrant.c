@@ -44,7 +44,7 @@
 typedef int             cmp_t(void *, const void *, const void *);
 
 static __inline char    *med3(char *, char *, char *, cmp_t *, void *);
-static __inline void     swapfunc(char *, char *, int, int);
+static __inline void     swapfunc(char *, char *, size_t, int);
 
 #define min(a, b)       (a) < (b) ? (a) : (b)
 
@@ -66,12 +66,12 @@ static __inline void     swapfunc(char *, char *, int, int);
         es % sizeof(long) ? 2 : es == sizeof(long)? 0 : 1;
 
 static __inline void
-swapfunc(char *a, char *b, int n, int swaptype)
+swapfunc(char *a, char *b, size_t n, int swaptype)
 {
         if(swaptype <= 1)
-                swapcode(long, a, b, n)
+                swapcode(long, a, b, (long)n)
         else
-                swapcode(char, a, b, n)
+                swapcode(char, a, b, (char)n)
 }
 
 #define swap(a, b)                                      \
@@ -114,7 +114,7 @@ loop:   SWAPINIT(a, es);
                 pl = a;
                 pn = (char *)a + (n - 1) * es;
                 if (n > 40) {
-                        d = (n / 8) * es;
+                        d = (int)((n / 8) * es);
                         pl = med3(pl, pl + d, pl + 2 * d, cmp, thunk);
                         pm = med3(pm - d, pm, pm + d, cmp, thunk);
                         pn = med3(pn - 2 * d, pn - d, pn, cmp, thunk);
@@ -158,14 +158,14 @@ loop:   SWAPINIT(a, es);
         }
 
         pn = (char *)a + n * es;
-        r = min(pa - (char *)a, pb - pa);
+        r = min((int)(pa - (char *)a), (int)(pb - pa));
         vecswap(a, pb - r, r);
-        r = min((size_t)(pd - pc), pn - pd - es);
+        r = min((int)(pd - pc), (int)(pn - pd - es));
         vecswap(pb, pn - r, r);
-        if ((size_t)(r = pb - pa) > es)
+        if ((size_t)(r = (int)(pb - pa)) > es)
                 QSORT_R(a, r / es, es, thunk, cmp);
 
-        if ((size_t)(r = pd - pc) > es) {
+        if ((size_t)(r = (int)(pd - pc)) > es) {
                 /* Iterate rather than recurse to save stack space */
                 a = pn - r;
                 n = r / es;
