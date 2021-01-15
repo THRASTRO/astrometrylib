@@ -314,7 +314,7 @@ $(DESTDIR)$(PREFIX)/lib/%.dylib: lib/%.dylib \
 test: test_build
 
 clean-objects: | lib
-	-$(RM) lib/*.a lib/*.so lib/*.dll lib/*.dylib lib/*.la
+	-$(RM) lib/*.a lib/*.so lib/*.dll lib/*.dylib lib/*.la $(DEMO_EXE)
 	-$(RMDIR) lib
 clean: clean-objects
 	$(RM) $(CLEANUPS)
