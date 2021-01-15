@@ -26,7 +26,7 @@ kdtree_t* KDFUNC(kdtree_build_2)
     return kd;
 }
 
-/* Range seach */
+/* Range search */
 kdtree_qres_t* KDFUNC(kdtree_rangesearch)
      (const kdtree_t *kd, const void *pt, double maxd2) {
     return KDFUNC(kdtree_rangesearch_options_reuse)(kd, NULL, pt, maxd2, KD_OPTIONS_COMPUTE_DISTS | KD_OPTIONS_SORT_DISTS);

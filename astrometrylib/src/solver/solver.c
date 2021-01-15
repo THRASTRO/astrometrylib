@@ -11,26 +11,6 @@
 #include "fit-wcs.h"
 #include "tweak2.h"
 
-//void solver_set_keep_logodds(solver_t* solver, double logodds) {
-//    solver->logratio_tokeep = logodds;
-//}
-
-//int solver_set_parity(solver_t* solver, int parity) {
-//    if (!((parity == PARITY_NORMAL) || (parity == PARITY_FLIP) || (parity == PARITY_BOTH))) {
-//        ANERROR("Invalid parity value: %i", parity);
-//        return -1;
-//    }
-//    solver->parity = parity;
-//    return 0;
-//}
-
-//void solver_get_field_center(const solver_t* solver, double* px, double* py) {
-//    if (px)
-//        *px = (solver->field_maxx + solver->field_minx)/2.0;
-//    if (py)
-//        *py = (solver->field_maxy + solver->field_miny)/2.0;
-//}
-
 void solver_tweak2(solver_t* sp, MatchObj* mo, int order, sip_t* verifysip) {
     double* xy = NULL;
     int Nxy;

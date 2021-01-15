@@ -14,8 +14,8 @@
  image and reference catalog by searching within a radius, and that
  radius is small near a region of confidence, and grows as you move
  away.  That makes it possible to pick up more distant matches, but
- they are downweighted in the fit.  The annealing process reduces the
- slope of the growth of the matching radius with respect to the
+ they are down-weighted in the fit.  The annealing process reduces
+ the slope of the growth of the matching radius with respect to the
  distance from the region of confidence.
  
  In Astrometry.net, the confidence region is the center of the quad

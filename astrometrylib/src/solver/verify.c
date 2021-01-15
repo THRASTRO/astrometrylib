@@ -1690,14 +1690,6 @@ double verify_star_lists_ror(double* refxys, int NR,
         X = -HUGE_VAL;
     }
 
-
-    // if (p_testperm && *p_testperm) {
-    //     if (v.testperm != *p_testperm) {
-    //         free(*p_testperm);
-    //         *p_testperm = NULL;
-    //     }
-    // }
-
     if (p_testperm)
         *p_testperm = v.testperm;
     else

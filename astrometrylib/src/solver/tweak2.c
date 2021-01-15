@@ -12,7 +12,6 @@
 #include "matchobj.h"
 #include "mathutil.h"
 #include "verify.h"
-// #include "bl.h"
 
 sip_t* tweak2(const double* fieldxy, int Nfield,
               double fieldjitter,

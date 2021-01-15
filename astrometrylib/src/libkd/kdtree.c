@@ -24,14 +24,6 @@ kdtree_t* kdtree_build(kdtree_t* kd, void *data, int N, int D, int Nleaf,
                           NULL, NULL);
 }
 
-
-// KD_DECLARE(kdtree_update_funcs, void, (kdtree_t*));
-
-// void kdtree_update_funcs(kdtree_t* kd) {
-//     KD_DISPATCH(kdtree_update_funcs, kd->treetype,, (kd));
-// }
-
-
 static inline u8 node_level(int nodeid) {
     return an_flsB(nodeid + 1);
 }
@@ -340,11 +332,6 @@ int kdtree_nearest_neighbour(const kdtree_t* kd, const void* pt, double* p_mindi
     return kdtree_nearest_neighbour_within(kd, pt, HUGE_VAL, p_mindist2);
 }
 
-//int kdtree_check(const kdtree_t* kd) {
-//    assert(kd->fun.check);
-//    return kd->fun.check(kd);
-//}
-
 KD_DECLARE(kdtree_nn, void, (const kdtree_t* kd, const void* vquery, double* p_bestd2, int* p_ibest));
 
 int kdtree_nearest_neighbour_within(const kdtree_t* kd, const void *pt, double maxd2,
@@ -430,23 +417,3 @@ int kdtree_node_point_maxdist2_exceeds(const kdtree_t* kd, int node, const void*
     KD_DISPATCH(kdtree_node_point_maxdist2_exceeds, kd->treetype, res=, (kd, node, pt, dist2));
     return res;
 }
-
-//void kdtree_nodes_contained(const kdtree_t* kd,
-//                            const void* querylow, const void* queryhi,
-//                            void (*callback_contained)(const kdtree_t* kd, int node, void* extra),
-//                            void (*callback_overlap)(const kdtree_t* kd, int node, void* extra),
-//                            void* cb_extra) {
-//    assert(kd->fun.nodes_contained);
-//    kd->fun.nodes_contained(kd, querylow, queryhi, callback_contained, callback_overlap, cb_extra);
-//}
-//
-//int kdtree_get_bboxes(const kdtree_t* kd, int node, void* bblo, void* bbhi) {
-//    assert(kd->fun.get_bboxes);
-//    return kd->fun.get_bboxes(kd, node, bblo, bbhi);
-//}
-//
-//void kdtree_fix_bounding_boxes(kdtree_t* kd) {
-//    assert(kd->fun.fix_bounding_boxes);
-//    kd->fun.fix_bounding_boxes(kd);
-//}
-

@@ -227,7 +227,12 @@ int main() {
 
     const char* fnimg = "../test/field-02.jpg";
 
+#ifdef _WIN32
+    FILE* imgfh;
+    fopen_s(&imgfh, fnimg, "rb");
+#else
     FILE* imgfh = fopen(fnimg, "rb");
+#endif
     if (!imgfh) {
         logerr("Could not open %s\n", fnimg);
         exit(1);
@@ -521,7 +526,7 @@ void ra2hmsstring(double ra, char* str) {
         m -= 60;
         h += 1;
     }
-    sprintf(str, "%02i:%02i:%02i.%03i", h, m, ss, ds);
+    sprintf_s(str, 32, "%02i:%02i:%02i.%03i", h, m, ss, ds);
 }
 
 
@@ -544,7 +549,7 @@ void dec2dmsstring(double dec, char* str) {
         m -= 60;
         d += 1;
     }
-    sprintf(str, "%c%02i:%02i:%02i.%03i", (sign == 1 ? '+' : '-'), d, m, ss, ds);
+    sprintf_s(str, 32, "%c%02i:%02i:%02i.%03i", (sign == 1 ? '+' : '-'), d, m, ss, ds);
 }
 
 
