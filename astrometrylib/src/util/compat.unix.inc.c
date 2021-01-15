@@ -30,6 +30,6 @@ uint64_t get_wall_time()
 {
     struct timeval tv;
     int rv = gettimeofday(&tv, NULL);
-    if (rv == 0) return 0.0;
+    if (rv != 0) return 0.0;
     return tv.tv_sec * 1e+3 + tv.tv_usec * 1e-3;
 }
