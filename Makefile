@@ -17,15 +17,28 @@ INSTALL  ?= install
 CFLAGS   ?= -Wall
 CXXFLAGS ?= -Wall
 LDFLAGS  ?= -Wall
-ifndef COVERAGE
-  CFLAGS   += -O3 -pipe -DNDEBUG -fomit-frame-pointer
-  CXXFLAGS += -O3 -pipe -DNDEBUG -fomit-frame-pointer
-  LDFLAGS  += -O3 -pipe -DNDEBUG -fomit-frame-pointer
-else
-  CFLAGS   += -O1 -fno-omit-frame-pointer
-  CXXFLAGS += -O1 -fno-omit-frame-pointer
-  LDFLAGS  += -O1 -fno-omit-frame-pointer
+OPTIMIZE ?= -O3
+LDLIBS   ?=
+
+CFLAGS   += -fno-omit-frame-pointer
+CXXFLAGS += -fno-omit-frame-pointer
+LDFLAGS  += -fno-omit-frame-pointer
+
+ifdef COVERAGE
+  OPTIMIZE = -O1
+  CFLAGS   += -g -pipe -DNDEBUG
+  CXXFLAGS += -g -pipe -DNDEBUG
+  LDFLAGS  += -g -pipe -DNDEBUG
 endif
+
+ifdef ASAN
+  OPTIMIZE = -O1
+  CFLAGS   += -g -fsanitize=address -fno-omit-frame-pointer
+  CXXFLAGS += -g -fsanitize=address -fno-omit-frame-pointer
+  LDFLAGS  += -g -fsanitize=address -fno-omit-frame-pointer
+  LDLIBS   += -lasan
+endif
+
 ifeq "$(ANLIB_GPO)" "generate"
   CFLAGS   += -fprofile-generate
   CXXFLAGS += -fprofile-generate
@@ -36,6 +49,7 @@ ifeq "$(ANLIB_GPO)" "use"
   CXXFLAGS += -fprofile-use
   LDFLAGS  += -fprofile-use -Wl,-fprofile-instr-use
 endif
+
 CAT ?= $(if $(filter $(OS),Windows_NT),type,cat)
 
 ifneq (,$(findstring /cygdrive/,$(PATH)))
@@ -56,8 +70,6 @@ endif
 endif
 endif
 
-LDFLAGS += -lpthread -lgsl
-
 ifndef ANLIB_VERSION
 	ifneq ($(wildcard ./.git/ ),)
 		ANLIB_VERSION ?= $(shell git describe --abbrev=4 --dirty --always --tags)
@@ -71,8 +83,8 @@ ifdef ANLIB_VERSION
 	CXXFLAGS += -DANLIB_VERSION="\"$(ANLIB_VERSION)\""
 endif
 
-CXXFLAGS += -std=c++11
-LDFLAGS  += -std=c++11
+# CXXFLAGS += -std=c++11
+# LDFLAGS  += -std=c++11
 
 ifeq (Windows,$(UNAME))
 #	ifneq ($(BUILD),shared)
@@ -110,6 +122,10 @@ ifndef SEP_PATH
 	SEP_PATH += $(CURDIR)/vendor/sep
 endif
 
+CFLAGS += $(OPTIMIZE)
+CXXFLAGS += $(OPTIMIZE)
+LDFLAGS += $(OPTIMIZE)
+
 CFLAGS += -I $(GSL_PATH)
 CXXFLAGS += -I $(GSL_PATH)
 CFLAGS += -I $(STB_PATH)
@@ -123,7 +139,7 @@ CFLAGS   += $(EXTRA_CFLAGS)
 CXXFLAGS += $(EXTRA_CXXFLAGS)
 LDFLAGS  += $(EXTRA_LDFLAGS)
 
-LDLIBS = -lgsl -lgslcblas
+LDLIBS += -lgsl -lgslcblas -lpthread
 ifneq ($(BUILD),shared)
 	ifneq ($(STATIC_LIBSTDCPP),1)
 		LDLIBS += -lstdc++
@@ -204,8 +220,8 @@ endif
 endif
 
 include Makefile.conf
-OBJECTS = $(addprefix ./,$(SOURCES:.cpp=.o))
-COBJECTS = $(addprefix ./,$(CSOURCES:.c=.o))
+COBJECTS = $(addprefix ./,$(CFILES:.cpp=.o))
+CPPOBJECTS = $(addprefix ./,$(CPPFILES:.c=.o))
 HEADOBJS = $(addprefix ./,$(HPPFILES:.hpp=.hpp.gch))
 RCOBJECTS = $(RESOURCES:.rc=.o)
 
@@ -213,13 +229,13 @@ DEBUG_LVL ?= NONE
 
 CLEANUPS ?=
 CLEANUPS += $(RCOBJECTS)
+CLEANUPS += $(CPPOBJECTS)
 CLEANUPS += $(COBJECTS)
-CLEANUPS += $(OBJECTS)
 CLEANUPS += $(HEADOBJS)
 CLEANUPS += $(ANLIB_LIB)
 
 demog.exe: $(BUILD)
-	$(CXX) $(OBJECTS) $(COBJECTS) $(LDFLAGS) $(LDLIBS) -o $(DEMO_EXE)
+	$(CXX) $(COBJECTS) $(CPPOBJECTS) $(LDFLAGS) $(LDLIBS) -o $(DEMO_EXE)
 
 all: demo.exe
 
@@ -238,27 +254,27 @@ debug-shared: shared
 lib:
 	$(MKDIR) lib
 
-lib/astrometrylib.a: $(COBJECTS) $(OBJECTS) | lib
-	$(AR) rcvs $@ $(COBJECTS) $(OBJECTS)
+lib/astrometrylib.a: $(CPPOBJECTS) $(COBJECTS) | lib
+	$(AR) rcvs $@ $(CPPOBJECTS) $(COBJECTS)
 
-lib/astrometrylib.so: $(COBJECTS) $(OBJECTS) | lib
-	$(CXX) -shared $(LDFLAGS) -o $@ $(COBJECTS) $(OBJECTS) $(LDLIBS)
+lib/astrometrylib.so: $(CPPOBJECTS) $(COBJECTS) | lib
+	$(CXX) -shared $(LDFLAGS) -o $@ $(CPPOBJECTS) $(COBJECTS) $(LDLIBS)
 
-lib/astrometrylib.dylib: $(COBJECTS) $(OBJECTS) | lib
-	$(CXX) -shared $(LDFLAGS) -o $@ $(COBJECTS) $(OBJECTS) $(LDLIBS) \
+lib/astrometrylib.dylib: $(CPPOBJECTS) $(COBJECTS) | lib
+	$(CXX) -shared $(LDFLAGS) -o $@ $(CPPOBJECTS) $(COBJECTS) $(LDLIBS) \
 	-install_name @rpath/astrometrylib.dylib
 
-lib/astrometrylib.dll: $(COBJECTS) $(OBJECTS) $(RCOBJECTS) | lib
-	$(CXX) -shared $(LDFLAGS) -o $@ $(COBJECTS) $(OBJECTS) $(RCOBJECTS) $(LDLIBS) \
+lib/astrometrylib.dll: $(CPPOBJECTS) $(COBJECTS) $(RCOBJECTS) | lib
+	$(CXX) -shared $(LDFLAGS) -o $@ $(CPPOBJECTS) $(COBJECTS) $(RCOBJECTS) $(LDLIBS) \
 	-s -Wl,--subsystem,windows,--out-implib,lib/astrometrylib.a
 
 $(RCOBJECTS): %.o: %.rc
 	$(WINDRES) -i $< -o $@
 
-$(OBJECTS): %.o: %.cpp
+$(COBJECTS): %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
-$(COBJECTS): %.o: %.c
+$(CPPOBJECTS): %.o: %.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 $(HEADOBJS): %.hpp.gch: %.hpp

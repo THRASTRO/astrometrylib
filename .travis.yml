@@ -5,6 +5,8 @@ before_install:
 
 script: 
   # should solve with index 4211, 4210 or 4209
+  - wget http://www.ocbnet.ch/astrometrylib/4200/anidx-little-endian/index-4209.anidx -P indexes/4200/anidx
+  - wget http://www.ocbnet.ch/astrometrylib/4200/anidx-little-endian/index-4210.anidx -P indexes/4200/anidx
   - wget http://www.ocbnet.ch/astrometrylib/4200/anidx-little-endian/index-4211.anidx -P indexes/4200/anidx
-  - make
+  - make ASAN=1
   - cd demo && ./demo

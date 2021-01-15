@@ -293,31 +293,31 @@ void anidx_load(const char* fname, index_t* index)
 
 void anindex_free(index_t* index) {
 
-    // free(index->codekd->lr);
-    // free(index->codekd->split.any);
-    // free(index->codekd->minval);
-    // free(index->codekd->data.any);
-    // free(index->starkd->tree->lr);
-    // free(index->starkd->tree->split.any);
-    // free(index->starkd->tree->minval);
-    // free(index->starkd->tree->data.any);
-    // free(index->quads);
-    // free(index->starkd->sweep);
+    // We use one single buffer
+    // Original used various buffers
+    // Therefore reset before cleanup
+    index->codekd->lr = 0;
+    index->codekd->split.any = 0;
+    index->codekd->minval = 0;
+    index->codekd->maxval = 0;
+    index->codekd->data.any = 0;
+    index->starkd->tree->lr = 0;
+    index->starkd->tree->split.any = 0;
+    index->starkd->tree->minval = 0;
+    index->starkd->tree->maxval = 0;
+    index->starkd->tree->data.any = 0;
+    index->starkd->sweep = 0;
+    index->quads = 0;
+    
+    kdtree_free(index->starkd->tree);
+    startree_close(index->starkd);
+    kdtree_free(index->codekd);
+    free(index->indexfn);
     free(index->dataptr);
+    index->dataptr = 0;
 
 #ifdef _WIN32
     CloseHandle(index->datamap);
 #endif
 
-    index->codekd->lr = 0;
-    index->codekd->split.any = 0;
-    index->codekd->minval = 0;
-    index->codekd->data.any = 0;
-    index->starkd->tree->lr = 0;
-    index->starkd->tree->split.any = 0;
-    index->starkd->tree->minval = 0;
-    index->starkd->tree->data.any = 0;
-    index->quads = 0;
-    index->starkd->sweep = 0;
-    index->dataptr = 0;
 }

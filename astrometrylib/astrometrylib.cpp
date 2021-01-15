@@ -76,15 +76,14 @@ void load_index_dir(const char* path, char** indexes, int* size)
         } while (FindNextFileA(hFind, &FindFileData));
         FindClose(hFind);
     }
-    free(lookup);
 
 #else
 
     DIR* dir = opendir(path);
     struct dirent* entry;
-    if(dir != nullptr)
+    if(dir != NULL)
     {
-        while((entry=readdir(dir)) != nullptr) {
+        while((entry=readdir(dir)) != NULL) {
             size_t fsize = strlen(entry->d_name);
             if (fsize < 7) continue;
             if (entry->d_name[fsize-6] != '.') continue;
@@ -111,6 +110,8 @@ void load_index_dir(const char* path, char** indexes, int* size)
     closedir(dir);
 
 #endif
+
+    free(lookup);
 
     // for (int i = 0; i < *size; i += 1) {
     //     printf("Index: %s\n", indexes[i]);
@@ -244,7 +245,6 @@ int main() {
         logerr("Not enough pixel components (rgb expected)\n");
         exit(1);
     }
-
     fclose(imgfh);
 
     size_t pixels = width * height;
@@ -253,6 +253,9 @@ int main() {
     for (size_t i = 0, o = 0; o < pixels; i += components, o += 1) {
         mono[o] = (idata[i + 0] + idata[i + 1] + idata[i + 2]) / 3.0;
     }
+
+    // Moved data to mono array
+    stbi_image_free(idata);
 
     // Create the SEP image structure from monochrome data
     sep_image im = { mono, NULL, NULL, NULL, SEP_TFLOAT,
@@ -280,13 +283,18 @@ int main() {
         5, conv, 3, 3, SEP_FILTER_CONV,
         32, 1.0, 1, 1.0, &catalog);
 
+    // Free pixel data
+    sep_bkg_free(bkg);
+    free(bgdata);
+    free(mono);
+
     int cutoff = 255;
 
     if (catalog) {
         sep_sort_catalog(catalog, cmp_sep_flux);
         if (catalog->nobj < cutoff) cutoff = catalog->nobj;
         logdebug("Extracted %d stars from field-01\n", catalog->nobj);
-        starxy_t* starxy = starxy_new(cutoff, TRUE, TRUE);
+        // starxy_t* starxy = starxy_new(cutoff, TRUE, TRUE);
         for (size_t i = 0; i < catalog->nobj; i += 1) {
             double x = catalog->x[i];
             double y = catalog->y[i];
@@ -406,7 +414,7 @@ int main() {
     for (int i = 0; i < MAX_THREADS; i++)
     {
         // Would give us back exit value of thread
-        pthread_join(hThreadArray[i], nullptr);
+        pthread_join(hThreadArray[i], NULL);
     }
 #endif
 
@@ -437,6 +445,14 @@ int main() {
     printf("Finished after %.2fs (used %.2fs CPU time).\n",
         delta_wall / 1000.0, delta_cpu / 1000.0);
     printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
+
+    sep_catalog_free(catalog);
+
+    for (size_t i = 0; i < nindexes; i += 1) {
+        free(indexes[i]);
+    }
+
+    nindexes = 0;
 
     return 0;
 
@@ -661,7 +677,6 @@ void* SolverThread(void* lpParam)
     while (true) {
 
         int idx = 0;
-        solver_t* sp = solver_new();
 
 #ifdef _WIN32
         // Acquire exclusive access to globals
@@ -694,8 +709,8 @@ void* SolverThread(void* lpParam)
             logerr("ERROR releasing lock\n");
         }
 #endif
-
         if (idx >= nindexes) return 0;
+        solver_t* sp = solver_new();
         add_index(sp, indexes[idx]);
         logmsg("Try %s\n", indexes[idx]);
 
@@ -725,6 +740,9 @@ void* SolverThread(void* lpParam)
         sp->cancel = pDataArray->cancel;
 
         sp->fieldxy_orig = starxy_new(pDataArray->nstars, false, false);
+        // ToDo: Fix this mess
+        free(sp->fieldxy_orig->x);
+        free(sp->fieldxy_orig->y);
         // sp->fieldxy_orig->N = pDataArray->nstars;
         sp->fieldxy_orig->x = pDataArray->starsx;
         sp->fieldxy_orig->y = pDataArray->starsy;
@@ -765,6 +783,9 @@ void* SolverThread(void* lpParam)
             printf("Field rotation angle: up is %g degrees E of N\n", orient);
             printf("####################################################\n");
 
+            sip_free(sp->best_match.sip);
+            // verify_free_matchobj(&sp->best_match);
+
             // if (m_UsePosition)
             //     printf(QString("Field is: (%1, %2) deg from search coords.").arg(raErr).arg(decErr));
             // printf(QString("Pixel Scale: %1\"").arg(pixscale));
@@ -779,8 +800,13 @@ void* SolverThread(void* lpParam)
         // Abort if a cancel was requested
         if (sp->cancel && *sp->cancel) {
             logmsg("CANCEL THREAD\n");
+            solver_cleanup(sp);
+            solver_free(sp);
             break;
         }
+
+        solver_cleanup(sp);
+        solver_free(sp);
 
     }
 
@@ -789,7 +815,7 @@ void* SolverThread(void* lpParam)
 #ifdef _WIN32
     return 0;
 #else
-    return nullptr;
+    return NULL;
 #endif
 }
 

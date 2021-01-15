@@ -1517,8 +1517,8 @@ static int solver_handle_hit(solver_t* sp, MatchObj* mo, sip_t* verifysip,
         sp->have_best_match = true;
         sp->best_index = sp->index;
     } else {
-        verify_free_matchobj(mo);
     }
+    verify_free_matchobj(mo);
 
     if (solved) {
         sp->best_match_solves = true;

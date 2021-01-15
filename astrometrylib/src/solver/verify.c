@@ -1441,12 +1441,15 @@ void verify_free_matchobj(MatchObj* mo) {
     free(mo->theta);
     free(mo->matchodds);
     free(mo->testperm);
+    // sip_free(mo->sip);
+
     mo->testperm = NULL;
     mo->refxyz = NULL;
     mo->refstarid = NULL;
     mo->refxy = NULL;
     mo->theta = NULL;
     mo->matchodds = NULL;
+    // mo->sip = NULL;
 }
 
 void verify_matchobj_deep_copy(const MatchObj* mo, MatchObj* dest) {
@@ -1687,6 +1690,13 @@ double verify_star_lists_ror(double* refxys, int NR,
         X = -HUGE_VAL;
     }
 
+
+    // if (p_testperm && *p_testperm) {
+    //     if (v.testperm != *p_testperm) {
+    //         free(*p_testperm);
+    //         *p_testperm = NULL;
+    //     }
+    // }
 
     if (p_testperm)
         *p_testperm = v.testperm;

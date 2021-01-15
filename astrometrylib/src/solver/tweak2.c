@@ -195,6 +195,10 @@ sip_t* tweak2(const double* fieldxy, int Nfield,
             //    matchobj_log_hit_miss(theta, testperm, besti+1, Nfield, LOG_VERB, "Hit/miss: ");
             //}
 
+            // Not needed?
+            free(testperm);
+            testperm = NULL;
+
             /*
              logverb("\nAfter verify():\n");
              for (i=0; i<Nin; i++) {
@@ -256,6 +260,10 @@ sip_t* tweak2(const double* fieldxy, int Nfield,
                 free(fieldsigma2s);
                 free(indexpix);
                 free(indexin);
+
+                free(testperm);
+                free(refperm);
+
                 return NULL;
             }
 
@@ -314,6 +322,7 @@ sip_t* tweak2(const double* fieldxy, int Nfield,
         free(theta);
         free(odds);
         free(refperm);
+        free(testperm);
         gamma = 1.0;
         // Project reference sources into pixel space; keep the ones inside image bounds.
         Nin = 0;
@@ -381,6 +390,7 @@ sip_t* tweak2(const double* fieldxy, int Nfield,
     }
     free(theta);
     free(refperm);
+    free(testperm);
 
     if (newodds)
         *newodds = odds;
