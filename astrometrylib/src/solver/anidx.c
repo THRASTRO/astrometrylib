@@ -79,11 +79,14 @@ void anidx_load(const char* fname, index_t* index)
 
 #ifdef _WIN32
 
-    OFSTRUCT  _buffer;
-    HANDLE fh = OpenFile(
+    HANDLE fh = CreateFileA(
         fname,
-        &_buffer,
-        OF_READ
+        GENERIC_READ,
+        FILE_SHARE_READ,
+        NULL,
+        OPEN_EXISTING,
+        FILE_ATTRIBUTE_NORMAL,
+        NULL
     );
 
     if (!fh) {

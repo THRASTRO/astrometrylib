@@ -20,6 +20,11 @@
 *
 *%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%*/
 
+#ifdef _MSC_VER
+#pragma warning (disable : 4305)
+#pragma warning (disable : 4244)
+#endif
+
 /* datatype codes */
 #define SEP_TBYTE        11  /* 8-bit unsigned byte */
 #define SEP_TINT         31  /* native int type */
