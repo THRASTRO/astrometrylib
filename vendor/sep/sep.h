@@ -400,7 +400,7 @@ extern char *sep_version_string;
  * error status value.  The message may be up to 60 characters long, plus
  * the terminating null character.
  */
-void sep_get_errmsg(int status, char *errtext);
+void sep_get_errmsg(int status, char *errtext, int errsize);
 
 
 /* sep_get_errdetail()

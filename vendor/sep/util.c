@@ -33,22 +33,22 @@ static char _errdetail_buffer[DETAILSIZE] = "";
 
 PIXTYPE convert_dbl(void *ptr)
 {
-  return *(double *)ptr;
+  return *(PIXTYPE*)(double*)ptr;
 }
 
 PIXTYPE convert_flt(void *ptr)
 {
-  return *(float *)ptr;
+  return *(PIXTYPE*)(float*)ptr;
 }
 
 PIXTYPE convert_int(void *ptr)
 {
-  return *(int *)ptr;
+  return *(PIXTYPE*)(int*)ptr;
 }
 
 PIXTYPE convert_byt(void *ptr)
 {
-  return *(BYTE *)ptr;
+  return *(PIXTYPE*)(BYTE*)ptr;
 }
 
 /* return the correct converter depending on the datatype code */
@@ -99,7 +99,7 @@ void convert_array_dbl(void *ptr, int n, PIXTYPE *target)
   double *source = (double *)ptr;
   int i;
   for (i=0; i<n; i++, source++)
-    target[i] = *source;
+    target[i] = convert_dbl(source);
 }
 
 void convert_array_int(void *ptr, int n, PIXTYPE *target)
@@ -107,7 +107,7 @@ void convert_array_int(void *ptr, int n, PIXTYPE *target)
   int *source = (int *)ptr;
   int i;
   for (i=0; i<n; i++, source++)
-    target[i] = *source;
+    target[i] = convert_int(source);
 }
 
 void convert_array_byt(void *ptr, int n, PIXTYPE *target)
@@ -115,7 +115,7 @@ void convert_array_byt(void *ptr, int n, PIXTYPE *target)
   BYTE *source = (BYTE *)ptr;
   int i;
   for (i=0; i<n; i++, source++)
-    target[i] = *source;
+    target[i] = convert_byt(source);
 }
 
 int get_array_converter(int dtype, array_converter *f, int *size)
@@ -256,7 +256,7 @@ int get_array_subtractor(int dtype, array_writer *f, int *size)
 /*****************************************************************************/
 /* Error messaging */
 
-void sep_get_errmsg(int status, char *errtext)
+void sep_get_errmsg(int status, char *errtext, int errsize)
 /* Return a short descriptive error message that corresponds to the input
  * error status value.  The message may be up to 60 characters long, plus
  * the terminating null character. */
@@ -265,40 +265,40 @@ void sep_get_errmsg(int status, char *errtext)
   switch (status)
     {
     case RETURN_OK:
-      strcpy_s(errtext, 80, "OK - no error");
+      strcpy_s(errtext, errsize, "OK - no error");
       break;
     case MEMORY_ALLOC_ERROR:
-      strcpy_s(errtext, 80, "memory allocation");
+      strcpy_s(errtext, errsize, "memory allocation");
       break;
     case PIXSTACK_FULL:
-      strcpy_s(errtext, 80, "internal pixel buffer full");
+      strcpy_s(errtext, errsize, "internal pixel buffer full");
       break;
     case DEBLEND_OVERFLOW:
-      strcpy_s(errtext, 80, "object deblending overflow");
+      strcpy_s(errtext, errsize, "object deblending overflow");
       break;
     case ILLEGAL_DTYPE:
-      strcpy_s(errtext, 80, "dtype not recognized/unsupported");
+      strcpy_s(errtext, errsize, "dtype not recognized/unsupported");
       break;
     case ILLEGAL_SUBPIX:
-      strcpy_s(errtext, 80, "subpix value must be nonnegative");
+      strcpy_s(errtext, errsize, "subpix value must be nonnegative");
       break;
     case NON_ELLIPSE_PARAMS:
-      strcpy_s(errtext, 80, "parameters do not describe ellipse");
+      strcpy_s(errtext, errsize, "parameters do not describe ellipse");
       break;
     case ILLEGAL_APER_PARAMS:
-      strcpy_s(errtext, 80, "invalid aperture parameters");
+      strcpy_s(errtext, errsize, "invalid aperture parameters");
       break;
     case LINE_NOT_IN_BUF:
-      strcpy_s(errtext, 80, "array line out of buffer");
+      strcpy_s(errtext, errsize, "array line out of buffer");
       break;
    case RELTHRESH_NO_NOISE:
-      strcpy_s(errtext, 80, "relative threshold but image has noise_type of NONE");
+      strcpy_s(errtext, errsize, "relative threshold but image has noise_type of NONE");
       break;
     case UNKNOWN_NOISE_TYPE:
-      strcpy_s(errtext, 80, "image has unknown noise_type");
+      strcpy_s(errtext, errsize, "image has unknown noise_type");
       break;
     default:
-       strcpy_s(errtext, 80, "unknown error status");
+       strcpy_s(errtext, errsize, "unknown error status");
        break;
     }
 }
@@ -338,5 +338,5 @@ float fqmedian(float *ra, int n)
   if (n<2)
     return *ra;
   else
-    return n&1? ra[n/2] : (ra[n/2-1]+ra[n/2])/2.0;
+    return n&1? ra[n/2] : (ra[n/2-1]+ra[n/2])/2.0f;
 }
