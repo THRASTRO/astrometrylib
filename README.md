@@ -122,7 +122,15 @@ This is a bit further than POC status currently.
 - CPU and real time limits for windows have been implemented.
 - There are probably some leaks left, although no big ones.
 
-### How does it all work?
+## License
+
+Parts of the code written by the Astrometry.net Team are licensed under a 3-clause
+BSD-style license. See the file LICENSE for the full license text. The code written
+for astrometrylib is released under the same dual-license. However, since this code
+and Astrometry.net uses libraries licensed under the GNU GPL, the whole work must
+be distributed under the GPL version 3 or later.
+
+## How does it all work?
 
 If you wonder how the plate solving internally works, I tried to
 document some of my findings at [astronomy stackexchange][4].
